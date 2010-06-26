@@ -17,7 +17,14 @@ static int ch_name3(struct nebula *neb);
 static int ch_name4(struct nebula *neb);
 static int ch_name5(struct nebula *neb);
 
+static int ch_attr1(struct nebula *neb);
+static int ch_attr2(struct nebula *neb);
+static int ch_attr3(struct nebula *neb);
+
+
+
 #define TEST_NAME_A "Tento"
+#define TEST_ATTR_A "Forte"
 
 enum {
 	TEST_SUCCESS,
@@ -37,6 +44,12 @@ static const struct tests {
 	{ "Character Name Get by Name",	ch_name3 },
 	{ "Character Name Correct",	ch_name4 },
 	{ "Character Get same object",	ch_name5 },
+
+	{ "Attribute Add",	ch_attr1 },
+	{ "Attribute Get",	ch_attr2 },
+	{ "Attribute Dup Add",	ch_attr3 },
+
+
 };
 #define N_TESTS (sizeof(tests)/sizeof(tests[0]))
 
@@ -170,5 +183,41 @@ ch_name5(struct nebula *neb){
 	return TEST_SUCCESS;
 }
 
+
+
+
+static int
+ch_attr1(struct nebula *neb){
+	struct neb_character *ch;
+	struct neb_attr *at;
+
+	ch = neb_character_new(neb);
+	at = neb_character_attribuate_add(ch, TEST_ATTR_A);
+	if (!at) return -1;
+	return TEST_SUCCESS;
+}
+
+static int
+ch_attr2(struct nebula *neb){
+	struct neb_character *ch;
+	struct neb_attr *at;
+
+	ch = neb_character_new(neb);
+	neb_character_attribuate_add(ch, TEST_ATTR_A);
+	at = neb_character_attribuate_get(ch, TEST_ATTR_A);
+	if (!at) return -1;
+	return TEST_SUCCESS;
+}
+static int
+ch_attr3(struct nebula *neb){
+	struct neb_character *ch;
+	struct neb_attr *at;
+
+	ch = neb_character_new(neb);
+	neb_character_attribuate_add(ch, TEST_ATTR_A);
+	at = neb_character_attribuate_add(ch, TEST_ATTR_A);
+	if (at) return -1;
+	return TEST_SUCCESS;
+}
 
 

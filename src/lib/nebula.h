@@ -22,6 +22,9 @@ struct neb_character *neb_character_get(struct nebula *nebula, const char *name)
 
 struct neb_attr *neb_character_attribuate_add(struct neb_character *,
 		const char *name);
+struct neb_attr *neb_character_attribuate_get(struct neb_character *,
+		const char *name);
+
 struct neb_note *neb_character_note_add(struct neb_character *,
 		const char *key);
 

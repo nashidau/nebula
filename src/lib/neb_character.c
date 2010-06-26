@@ -18,6 +18,20 @@ struct neb_character {
 	Eina_List *notes;
 };
 
+struct neb_attr {
+	int magic;
+
+	char *name;
+};
+
+struct neb_note {
+	int magic;
+
+	char *key;
+
+	const char *markup;
+};
+
 
 struct neb_character *
 neb_character_new(struct nebula *neb){
@@ -70,9 +84,63 @@ neb_character_get(struct nebula *neb, const char *name){
 }
 
 
-struct neb_attr *neb_character_attribuate_add(struct neb_character *,
-		const char *name);
-struct neb_note *neb_character_note_add(struct neb_character *,
-		const char *key);
+struct neb_attr *
+neb_character_attribuate_add(struct neb_character *nc, const char *name){
+	struct neb_attr *attr;
+
+	if (!nc || !name) return NULL;
+
+	/* FIXME: Check name is unique */
+	attr = neb_character_attribuate_get(nc,name);
+	if (attr) return NULL;
+
+	attr = calloc(1,sizeof(struct neb_attr));
+	if (!attr) return NULL;
+	attr->name = strdup(name);
+	if (!attr->name) {
+		free(attr);
+		return NULL;
+	}
+
+	nc->attrs = eina_list_append(nc->attrs, attr);
+
+	return attr;
+}
+
+struct neb_attr *
+neb_character_attribuate_get(struct neb_character *nc, const char *name){
+	struct neb_attr *attr;
+	Eina_List *l;
+
+	if (!nc || !name) return NULL;
+
+	EINA_LIST_FOREACH(nc->attrs, l, attr){
+		if (strcmp(name, attr->name) == 0){
+			return attr;
+		}
+	}
+	return NULL;
+}
+
+
+struct neb_note *
+neb_character_note_add(struct neb_character *nc, const char *key){
+	struct neb_note *note;
+
+	if (!nc || !key) return NULL;
+
+	note = calloc(1,sizeof(struct neb_note));
+	if (!note) return NULL;
+
+	note->key = strdup(key);
+	if (!note->key){
+		free(note);
+		return NULL;
+	}
+
+	nc->notes = eina_list_append(nc->notes, note);
+	return note;
+}
+
 
 

@@ -17,3 +17,7 @@ ${LIBTARGET}: ${SOURCES}
 
 
 nebula.c: nebula.h
+
+install: ${LIBTARGET}
+	cp ${LIBTARGET} /usr/local/lib
+	sudo ldconfig
