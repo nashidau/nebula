@@ -20,3 +20,23 @@ Target Systems
 Architecture
 ------------
 
+
+Terminology
+-----------
+
+Character:
+	Nebula is based around characters.  Characters are essentially just a
+	collection of attributes and notes.
+
+Attribute:
+	An attribute represents a value in a character. Obvious examples are
+	_Strength_ or an attack bonus.  Attributes are also refereed to as
+	_attrs_.
+
+Elements (elems):
+	A bonus or value making up an attribute.  There are various types of
+	elems.  The most basic is just a value.  They may refer to other
+	attributes, or before some sort of modifier on an attribute.:e
+
+
+
