@@ -1,4 +1,4 @@
-
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,11 +25,16 @@ static int ch_elem1(struct nebula *neb);
 static int ch_elem2(struct nebula *neb);
 static int ch_elem3(struct nebula *neb);
 
+static int ch_ref1(struct nebula *neb);
+static int ch_ref2(struct nebula *neb);
+static int ch_ref3(struct nebula *neb);
+static int ch_ref4(struct nebula *neb);
 
 
 
 #define TEST_NAME_A "Tento"
 #define TEST_ATTR_A "Forte"
+#define TEST_ATTR_B "Feeble"
 
 enum {
 	TEST_SUCCESS,
@@ -57,6 +62,11 @@ static const struct tests {
 	{ "Element Value Add",	ch_elem1 },
 	{ "Element Value set",	ch_elem2 },
 	{ "Element Value total",ch_elem3 },
+
+	{ "Element Ref Add",	ch_ref1 },
+	{ "Element Ref Add invalid",	ch_ref2 },
+	{ "Element Ref get",	ch_ref3 },
+	{ "Element ref total",	ch_ref4 },
 };
 #define N_TESTS (sizeof(tests)/sizeof(tests[0]))
 
@@ -245,7 +255,6 @@ static int
 ch_elem2(struct nebula *neb){
 	struct neb_character *ch;
 	struct neb_attr *at;
-	struct neb_elem *el;
 	int val;
 
 	ch = neb_character_new(neb);
@@ -262,21 +271,104 @@ static int
 ch_elem3(struct nebula *neb){
 	struct neb_character *ch;
 	struct neb_attr *at;
-	struct neb_elem *el;
 	int val;
 
 	ch = neb_character_new(neb);
 	at = neb_character_attr_add(ch, TEST_ATTR_A);
 	neb_attr_elem_value_add(at, 7);
-	neb_attr_elem_value_add(attr, 5);
+	neb_attr_elem_value_add(at, 5);
 
-	val = neb_attr_value_get(attr);
-	if (val != 12) return -1;
+	val = neb_attr_value_get(at);
+	if (val != 12){
+		printf("\n\tGot %d instead of %d\n",val,12);
+		return -1;
+	}
 
 	return TEST_SUCCESS;
 }
 
 
 
+static int
+ch_ref1(struct nebula *neb){
+	struct neb_character *ch;
+	struct neb_attr *at;
+	struct neb_elem *el;
 
+	ch = neb_character_new(neb);
+	at = neb_character_attr_add(ch, TEST_ATTR_A);
+	el = neb_attr_elem_reference_add(at, "Elvis", false);
+	if (!el) return -1;
 
+	return TEST_SUCCESS;
+}
+static int
+ch_ref2(struct nebula *neb){
+	struct neb_character *ch;
+	struct neb_attr *at;
+	struct neb_elem *el;
+
+	ch = neb_character_new(neb);
+	at = neb_character_attr_add(ch, TEST_ATTR_A);
+	/* Shoudl fail */
+	el = neb_attr_elem_reference_add(at, TEST_ATTR_B, true);
+	if (el) return -1;
+
+	return TEST_SUCCESS;
+}
+
+/**
+ * Forte:	7
+ * Feeble:	Forte
+ */
+static int
+ch_ref3(struct nebula *neb){
+	struct neb_character *ch;
+	struct neb_attr *at;
+	struct neb_elem *el;
+	int val;
+
+	ch = neb_character_new(neb);
+	at = neb_character_attr_add(ch, TEST_ATTR_A);
+	neb_attr_elem_value_add(at, 7);
+
+	at = neb_character_attr_add(ch, TEST_ATTR_B);
+	el = neb_attr_elem_reference_add(at, TEST_ATTR_A, true);
+
+	if (!el) return -1;
+
+	val = neb_attr_value_get(at);
+	if (val != 7){
+		printf("\n\tGot %d instead of %d\n",val,7);
+		return -1;
+	}
+
+	return TEST_SUCCESS;
+}
+
+static int
+ch_ref4(struct nebula *neb){
+	struct neb_character *ch;
+	struct neb_attr *at;
+	struct neb_elem *el;
+	int val;
+
+	ch = neb_character_new(neb);
+	at = neb_character_attr_add(ch, TEST_ATTR_A);
+	neb_attr_elem_value_add(at, 7);
+	neb_attr_elem_value_add(at, 5);
+
+	at = neb_character_attr_add(ch, TEST_ATTR_B);
+	neb_attr_elem_value_add(at, 12);
+	el = neb_attr_elem_reference_add(at, TEST_ATTR_A, true);
+
+	if (!el) return -1;
+
+	val = neb_attr_value_get(at);
+	if (val != 24){
+		printf("\n\tGot %d instead of %d\n",val,24);
+		return -1;
+	}
+
+	return TEST_SUCCESS;
+}

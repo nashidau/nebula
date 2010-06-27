@@ -32,7 +32,9 @@ struct neb_note *neb_character_note_add(struct neb_character *,
 struct neb_elem *neb_attr_elem_add(struct neb_attr *,
 		enum neb_elem_type);
 struct neb_elem *neb_attr_elem_value_add(struct neb_attr *, int value);
-
+struct neb_elem *neb_attr_elem_reference_add(struct neb_attr *,
+		const char *refname, bool check);
+int neb_attr_value_get(struct neb_attr *attr);
 
 
 

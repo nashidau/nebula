@@ -1,5 +1,7 @@
 
 #include <Eina.h>
+
+#include <stdbool.h>
 #include <stdio.h>
 
 #include "nebula.h"
@@ -16,14 +18,6 @@ struct neb_character {
 
 	Eina_List *attrs;
 	Eina_List *notes;
-};
-
-struct neb_attr {
-	int magic;
-
-	char *name;
-
-	Eina_List *elems;
 };
 
 struct neb_note {
@@ -103,6 +97,7 @@ neb_character_attr_add(struct neb_character *nc, const char *name){
 		free(attr);
 		return NULL;
 	}
+	attr->ch = nc;
 
 	nc->attrs = eina_list_append(nc->attrs, attr);
 
@@ -126,7 +121,7 @@ neb_character_attr_get(struct neb_character *nc, const char *name){
 
 int
 neb_attr_value_get(struct neb_attr *attr){
-	int value;
+	int value = 0;
 	struct neb_elem *el;
 	Eina_List *l;
 

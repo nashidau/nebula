@@ -11,3 +11,7 @@ SOURCES=		\
 
 nebtest: ${SOURCES}
 
+.PHONY: clean
+clean:
+	rm -f nebtest core *.o
+

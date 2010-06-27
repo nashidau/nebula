@@ -1,6 +1,8 @@
 
-#include <Eina.h>
+#include <stdbool.h>
 #include <stdio.h>
+
+#include <Eina.h>
 
 #include "nebula.h"
 

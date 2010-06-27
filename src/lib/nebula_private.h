@@ -18,5 +18,16 @@ struct neb_elem {
 	const char *name;
 };
 
+struct neb_attr {
+	int magic;
+
+	struct neb_character *ch;
+	char *name;
+
+	Eina_List *elems;
+};
+
+
+
 int nebula_charater_add(struct nebula*, struct neb_character *);
 int neb_attribute_element_append(struct neb_attr *attr, struct neb_elem *el);

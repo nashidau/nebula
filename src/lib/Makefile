@@ -21,4 +21,10 @@ nebula.c: nebula.h
 
 install: ${LIBTARGET}
 	cp ${LIBTARGET} /usr/local/lib
+	sudo ln -sf /usr/local/lib/libnebula.so.0 /usr/local/lib/libnebula.so
 	sudo ldconfig
+
+.PHONY: clean
+clean:
+	rm -f libneb*
+	rm -f core *.o
