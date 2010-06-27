@@ -21,6 +21,11 @@ static int ch_attr1(struct nebula *neb);
 static int ch_attr2(struct nebula *neb);
 static int ch_attr3(struct nebula *neb);
 
+static int ch_elem1(struct nebula *neb);
+static int ch_elem2(struct nebula *neb);
+static int ch_elem3(struct nebula *neb);
+
+
 
 
 #define TEST_NAME_A "Tento"
@@ -49,7 +54,9 @@ static const struct tests {
 	{ "Attribute Get",	ch_attr2 },
 	{ "Attribute Dup Add",	ch_attr3 },
 
-
+	{ "Element Value Add",	ch_elem1 },
+	{ "Element Value set",	ch_elem2 },
+	{ "Element Value total",ch_elem3 },
 };
 #define N_TESTS (sizeof(tests)/sizeof(tests[0]))
 
@@ -192,7 +199,7 @@ ch_attr1(struct nebula *neb){
 	struct neb_attr *at;
 
 	ch = neb_character_new(neb);
-	at = neb_character_attribuate_add(ch, TEST_ATTR_A);
+	at = neb_character_attr_add(ch, TEST_ATTR_A);
 	if (!at) return -1;
 	return TEST_SUCCESS;
 }
@@ -203,8 +210,8 @@ ch_attr2(struct nebula *neb){
 	struct neb_attr *at;
 
 	ch = neb_character_new(neb);
-	neb_character_attribuate_add(ch, TEST_ATTR_A);
-	at = neb_character_attribuate_get(ch, TEST_ATTR_A);
+	neb_character_attr_add(ch, TEST_ATTR_A);
+	at = neb_character_attr_get(ch, TEST_ATTR_A);
 	if (!at) return -1;
 	return TEST_SUCCESS;
 }
@@ -214,10 +221,62 @@ ch_attr3(struct nebula *neb){
 	struct neb_attr *at;
 
 	ch = neb_character_new(neb);
-	neb_character_attribuate_add(ch, TEST_ATTR_A);
-	at = neb_character_attribuate_add(ch, TEST_ATTR_A);
+	neb_character_attr_add(ch, TEST_ATTR_A);
+	at = neb_character_attr_add(ch, TEST_ATTR_A);
 	if (at) return -1;
 	return TEST_SUCCESS;
 }
+
+static int
+ch_elem1(struct nebula *neb){
+	struct neb_character *ch;
+	struct neb_attr *at;
+	struct neb_elem *el;
+
+	ch = neb_character_new(neb);
+	at = neb_character_attr_add(ch, TEST_ATTR_A);
+	el = neb_attr_elem_value_add(at, 7);
+	if (!el) return -1;
+
+	return TEST_SUCCESS;
+}
+
+static int
+ch_elem2(struct nebula *neb){
+	struct neb_character *ch;
+	struct neb_attr *at;
+	struct neb_elem *el;
+	int val;
+
+	ch = neb_character_new(neb);
+	at = neb_character_attr_add(ch, TEST_ATTR_A);
+	neb_attr_elem_value_add(at, 7);
+
+	val = neb_attr_value_get(at);
+	if (val != 7) return -1;
+
+	return TEST_SUCCESS;
+}
+
+static int
+ch_elem3(struct nebula *neb){
+	struct neb_character *ch;
+	struct neb_attr *at;
+	struct neb_elem *el;
+	int val;
+
+	ch = neb_character_new(neb);
+	at = neb_character_attr_add(ch, TEST_ATTR_A);
+	neb_attr_elem_value_add(at, 7);
+	neb_attr_elem_value_add(attr, 5);
+
+	val = neb_attr_value_get(attr);
+	if (val != 12) return -1;
+
+	return TEST_SUCCESS;
+}
+
+
+
 
 

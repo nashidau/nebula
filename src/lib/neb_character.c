@@ -22,6 +22,8 @@ struct neb_attr {
 	int magic;
 
 	char *name;
+
+	Eina_List *elems;
 };
 
 struct neb_note {
@@ -85,13 +87,13 @@ neb_character_get(struct nebula *neb, const char *name){
 
 
 struct neb_attr *
-neb_character_attribuate_add(struct neb_character *nc, const char *name){
+neb_character_attr_add(struct neb_character *nc, const char *name){
 	struct neb_attr *attr;
 
 	if (!nc || !name) return NULL;
 
 	/* FIXME: Check name is unique */
-	attr = neb_character_attribuate_get(nc,name);
+	attr = neb_character_attr_get(nc,name);
 	if (attr) return NULL;
 
 	attr = calloc(1,sizeof(struct neb_attr));
@@ -108,7 +110,7 @@ neb_character_attribuate_add(struct neb_character *nc, const char *name){
 }
 
 struct neb_attr *
-neb_character_attribuate_get(struct neb_character *nc, const char *name){
+neb_character_attr_get(struct neb_character *nc, const char *name){
 	struct neb_attr *attr;
 	Eina_List *l;
 
@@ -121,6 +123,31 @@ neb_character_attribuate_get(struct neb_character *nc, const char *name){
 	}
 	return NULL;
 }
+
+int
+neb_attr_value_get(struct neb_attr *attr){
+	int value;
+	struct neb_elem *el;
+	Eina_List *l;
+
+	if (!attr) return -1;
+
+	EINA_LIST_FOREACH(attr->elems, l, el){
+		value += el->type->value_get(el);
+	}
+	return value;
+}
+
+/* Internal call */
+int
+neb_attribute_element_append(struct neb_attr *attr, struct neb_elem *el){
+	/* FIXME: check magic */
+
+	attr->elems = eina_list_append(attr->elems, el);
+	return 0;
+}
+
+
 
 
 struct neb_note *

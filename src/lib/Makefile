@@ -8,7 +8,8 @@ LIBTARGET=libnebula.so.0
 
 SOURCES=			\
 	nebula.c		\
-	neb_character.c
+	neb_character.c		\
+	neb_elem.c
 
 ${LIBTARGET}: ${SOURCES}
 	${CC} -fPIC -Os -Wall -shared -Wl,-soname,${LIBTARGET} -o ${LIBTARGET} \
