@@ -13,7 +13,7 @@ SOURCES=			\
 
 ${LIBTARGET}: ${SOURCES}
 	${CC} -fPIC -Os -Wall -shared -Wl,-soname,${LIBTARGET} -o ${LIBTARGET} \
-                `pkg-config --cflags --libs ecore evas` \
+		${CFLAGS} ${LDFLAGS}	\
                 ${SOURCES}
 
 
