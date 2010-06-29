@@ -1,4 +1,4 @@
-PKGS=eina-0
+PKGS=eina-0 lua5.1
 
 CFLAGS+=`pkg-config --cflags ${PKGS}` 
 LDFLAGS+=`pkg-config --libs ${PKGS}` -rdynamic -ldl
@@ -9,7 +9,8 @@ LIBTARGET=libnebula.so.0
 SOURCES=			\
 	nebula.c		\
 	neb_character.c		\
-	neb_elem.c
+	neb_elem.c		\
+	luaneb.c
 
 ${LIBTARGET}: ${SOURCES}
 	${CC} -fPIC -Os -Wall -shared -Wl,-soname,${LIBTARGET} -o ${LIBTARGET} \
