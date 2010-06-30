@@ -1,0 +1,64 @@
+#!/usr/bin/lua5.1
+
+require[[nebula]]
+
+
+local stats = { 
+    -- Name (full),	Abbr (for bonus)
+    { "Constitution",	"co"	},
+    { "Agility",	"ag"	},
+    { "Self-Discipline","sd" },
+    { "Memory",		"me" },
+    { "Reasoning",	"re" },
+    { "Strength",	"st" },
+    { "Quickness",	"qu" },
+    { "Presense",	"pr" },
+    { "Empathy",	"em" },
+    { "Intuition",	"in" }
+}
+
+local cats = {
+    -- Name of category, it's stats, it's default progression
+	-- Then a list of skills
+    {  }
+}
+
+---
+-- Given a pair containing the stat full name, and it's abbreviatei create 
+-- it in the supplied character
+--
+-- A stat has hte following thing:
+--	Main stat rating:  Attr "Strength"
+--	A tag "Strength Bonus"
+--	A shorthand 'st' for Strenght Bonus
+function statcreate(ch, st)
+    if not ch or not st then return nil,"Need a chawracter and stat" end 
+    local fn,sn = st[1], st[2]
+    if not fn or not sn then return nil,"Need both short and full name" end
+
+    -- Nothing special to do for the stat
+    local stat = ch:attr_add(fn)
+
+    local bonus = ch:attr_add(fn .. " Bonus")
+    bonus:ref_add(fn, rmss_statbonus)
+
+    local simplename = ch:attr_add(sn)
+    simplename:ref_add(fn .. " Bonus")
+    simplename:lock()
+
+    return true
+end
+
+
+function create(ch)
+    for i,stat in ipairs(stats) do
+	statcreate(ch,stat) 
+    end
+
+end
+
+
+ch = nebula.character_add()
+create(ch)
+
+-- vim: set syn=lua sw=4 sts=4 :
