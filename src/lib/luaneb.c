@@ -145,11 +145,33 @@ lneb_attr_add(lua_State *lua){
 }
 static int
 lneb_attr_get(lua_State *lua){
-	lua_pushnil(lua);
+	struct lneb_char *lnc;
+	struct lneb_attr *lna;
+	struct neb_attr *at;
+	const char *name;
+
+	lnc = luaL_checkudata(lua, 1, LNEB_CHARACTER);
+	name = luaL_checkstring(lua,2);
+	luaL_argcheck(lua, name && strlen(name) > 1, 2,
+			"Must pass attribute name get");
+
+	at = neb_character_attr_get(lnc->ch, name);
+	if (!at)
+		return luaL_error(lua, "Can't find attribute");
+
+	/* FIXME: generalise wuth attr_add */
+	lna = lua_newuserdata(lua, sizeof(struct lneb_attr));
+	lna->neb = lnc->neb;
+	lna->attr = at;
+
+	luaL_getmetatable(lua, LNEB_ATTRIBUTE);
+	lua_setmetatable(lua, -2);
+
 	return 1;
 }
 static int
 lneb_note_add(lua_State *lua){
+	return luaL_error(lua, "note add: Not implemented");
 	lua_pushnil(lua);
 	return 1;
 }
