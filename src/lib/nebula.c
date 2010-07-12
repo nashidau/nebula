@@ -10,7 +10,17 @@ struct nebula {
 	Eina_List *characters;
 };
 
-
+/**
+ * Initialise the nebula library.
+ *
+ * The nebula instance should be passed to most other nebula functions.
+ * Multiple instnaces may exist, but data may not be used interchangably
+ * between them unless otherwise indicated.
+ * 
+ * Nebula will also init the Eina library.
+ *
+ * @return Nebula instance, or NULL on error.
+ */
 struct nebula *
 nebula_init(void){
 	struct nebula *neb;
@@ -23,8 +33,22 @@ nebula_init(void){
 	return neb;
 }
 
+/**
+ * Free a nebula instance, freeing all it's data.
+ *
+ * Note that you should make sure any changed data is saved before this
+ * function is called.
+ * 
+ * @param neb Nebula instance.
+ * @return 0 on success.
+ */
 int
 nebula_free(struct nebula *neb){
+
+	eina_shutdown();
+
+	/* FIXME: Really clean up */
+
 	free(neb);
 	return 0;
 }
