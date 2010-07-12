@@ -150,7 +150,13 @@ lneb_note_add(lua_State *lua){
 }
 static int
 lneb_attr_value_get(lua_State *lua){
-	lua_pushnil(lua);
+	struct lneb_attr *lna;
+	int val;
+
+	lna = luaL_checkudata(lua, 1, LNEB_ATTRIBUTE);
+
+	val = neb_attr_value_get(lna->attr);
+	lua_pushnumber(lua, val);
 	return 1;
 }
 
