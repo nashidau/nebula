@@ -32,7 +32,7 @@ local cats = {
 --	A tag "Strength Bonus"
 --	A shorthand 'st' for Strenght Bonus
 function statcreate(ch, st)
-    if not ch or not st then return nil,"Need a chawracter and stat" end 
+    if not ch or not st then return nil,"Need a character and stat" end 
     local fn,sn = st[1], st[2]
     if not fn or not sn then return nil,"Need both short and full name" end
 
@@ -60,5 +60,12 @@ end
 
 ch = nebula.character_add()
 create(ch)
+
+
+at = assert(ch:attr_get("st"));
+
+print("Strength: ",at:value_get())
+print("Else: ",at())
+print("Print directly",at)
 
 -- vim: set syn=lua sw=4 sts=4 :
