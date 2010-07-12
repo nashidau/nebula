@@ -24,6 +24,8 @@ struct neb_attr {
 	struct neb_character *ch;
 	char *name;
 
+	unsigned int lock;
+
 	Eina_List *elems;
 };
 

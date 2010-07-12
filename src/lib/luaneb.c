@@ -16,6 +16,8 @@ static int lneb_attr_value_get(lua_State *);
 static int lneb_elem_value_add(lua_State *);
 static int lneb_elem_ref_add(lua_State *);
 static int lneb_lock(lua_State *);
+static int lneb_unlock(lua_State *);
+static int lneb_attr_tostring(lua_State *);
 
 struct lneb_char {
 	struct nebula *neb;
@@ -55,6 +57,9 @@ static const struct luaL_Reg attrfns[] = {
 	{ "value_add",	lneb_elem_value_add },
 	{ "ref_add",	lneb_elem_ref_add },
 	{ "lock",	lneb_lock },
+	{ "unlock",	lneb_unlock },
+	{ "__call",	lneb_attr_value_get },
+	{ "__tostring",	lneb_attr_tostring },
 	{ NULL,		NULL },
 };
 
@@ -160,18 +165,54 @@ lneb_attr_value_get(lua_State *lua){
 	return 1;
 }
 
+/**
+ * Locks an attribute, returns lock level
+ */
 static int
 lneb_lock(lua_State *lua){
+	struct lneb_attr *lna;
+	int lvl;
 
-	printf("Lock not implemented\n");
-	lua_pushnil(lua);
-	lua_pushstring(lua,"Not implemented");
+	lna = luaL_checkudata(lua, 1, LNEB_ATTRIBUTE);
+
+	lvl = neb_attr_lock(lna->attr);
+	if (lvl < 1)
+		return luaL_error(lua, "Unable to lock attribute");
+
+	lua_pushnumber(lua, lvl);
+	return 1;
+}
+
+static int
+lneb_unlock(lua_State *lua){
+	struct lneb_attr *lna;
+	int lvl;
+
+	lna = luaL_checkudata(lua, 1, LNEB_ATTRIBUTE);
+	lvl = neb_attr_unlock(lna->attr);
+
+	if (lvl < 0)
+		return luaL_error(lua, "Unable to unlock attribute");
+	lua_pushnumber(lua, lvl);
 	return 1;
 }
 
 
 static int
 lneb_elem_value_add(lua_State *lua){
+	return luaL_error(lua, "Not implemented");
+}
+
+static int
+lneb_attr_tostring(lua_State *lua){
+	struct lneb_attr *lna;
+
+	lna = luaL_checkudata(lua, 1, LNEB_ATTRIBUTE);
+
+	lua_pushfstring(lua, "Attribute '%s' (= %d)%s",
+			neb_attr_name_get(lna->attr),
+			neb_attr_value_get(lna->attr),
+			neb_attr_lock_get(lna->attr)>0?" Locked":"");
 	return 1;
 }
 

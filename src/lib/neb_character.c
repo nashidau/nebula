@@ -133,6 +133,81 @@ neb_attr_value_get(struct neb_attr *attr){
 	return value;
 }
 
+/**
+ * Locks and attribute to prevent modification.
+ *
+ * Generally this is used to prevent aliases from being modified, or to lock
+ * down system related items.  So if you have an attribute 'st' to reference
+ * 'Strength' you can lock down 'st' to make sure noone accidently modifies
+ * 'st' instead of strength.
+ *
+ * Locks can be applied multiple times, which allows constructs to pass an
+ * attribute locked to another function for instance.  This function returns
+ * the current lock level.
+ *
+ * A locked attribute can be locked again.
+ *
+ * @param attr Attribute to lock.
+ * @return -1 on error, or the current lock level (> 0).
+ */
+int
+neb_attr_lock(struct neb_attr *attr){
+	if (!attr) return -1;
+
+	attr->lock ++;
+	return attr->lock;
+}
+
+/**
+ * Reduce lock level on an attribute.
+ * 
+ * Note that to fully unlock an attribute you need to unlock it as many times
+ * as you lock it.
+ *
+ * A return of 0 indicates the attribute is unlocked.
+ * It is an error to unlock an attribute that is currently unlocked.
+ *
+ * @param attr Attribute to reduce lock level on.
+ * @return -1 on error, or current lock level (0 or more).
+ */
+int
+neb_attr_unlock(struct neb_attr *attr){
+	if (!attr) return -1;
+
+	if (attr->lock == 0) return -1;
+	return --attr->lock;
+}
+
+/**
+ * Get the current lock level.
+ *
+ * Any value greater then 0 indicates the attribute is locked.
+ *
+ * @param attr Attribute to check
+ * @return -1 on error, 0 if unlocked, lock level (>0) otherwise.
+ */
+int
+neb_attr_lock_get(struct neb_attr *attr){
+	if (!attr) return -1;
+
+	return (int)(attr->lock);
+}
+
+/**
+ * Get the name of an attribute.
+ *
+ * Gets the name of an attribute.  The returned value should not be freed or
+ * modified by the caller.
+ *
+ * @param attr Attribute to get the name of.
+ * @return Attribute name or NULL on error.
+ */
+const char *
+neb_attr_name_get(struct neb_attr *attr){
+	if (!attr) return NULL;
+	return attr->name;
+}
+
 /* Internal call */
 int
 neb_attribute_element_append(struct neb_attr *attr, struct neb_elem *el){
@@ -141,6 +216,8 @@ neb_attribute_element_append(struct neb_attr *attr, struct neb_elem *el){
 	attr->elems = eina_list_append(attr->elems, el);
 	return 0;
 }
+
+
 
 
 

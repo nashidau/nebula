@@ -26,7 +26,10 @@ install: ${LIBTARGET}
 	sudo ln -sf /usr/local/lib/libnebula.so.0 /usr/local/lib/lua/5.1/nebula.so
 	sudo ldconfig
 
-.PHONY: clean
+.PHONY: clean tags
+tags:
+	ctags -R . & cscope -R -b
+
 clean:
 	rm -f libneb*
 	rm -f core *.o
