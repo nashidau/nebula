@@ -1,3 +1,7 @@
+/**
+ * Element management for Nebula Attributes
+ */
+
 #include <stdbool.h>
 
 
@@ -49,7 +53,17 @@ el_add(struct neb_attr *at, enum neb_elem_type type){
 	return el;
 }
 
-
+/**
+ * Create a new value elem.
+ *
+ * Value elements simply contain a numerical value.  Depending on system these
+ * may or may not change over the life of the character.  Non-changing
+ * elems are used in systems that include history.
+ *
+ * @param at Attribute to append element to
+ * @param value Initial value of element.
+ * @return New element.
+ */
 struct neb_elem *
 neb_attr_elem_value_add(struct neb_attr *at, int value){
 	struct neb_elem_value *el;
@@ -61,7 +75,27 @@ neb_attr_elem_value_add(struct neb_attr *at, int value){
 	return &el->elem;
 }
 
-
+/**
+ * Create a reference element.
+ *
+ * A reference element references the value of another attribute.  Often this
+ * will include some sort of filter to convert the value, but this is not
+ * always so.  For instance a reference can be used to add a bonus to a skill
+ * based on your strength directly, or it may calculate our strength bonus
+ * based on your raw strength skill (strength 17 -> +3 bonus for instance)
+ * using a filter.
+ *
+ * Generally the check flag should be set to true.  The only reason not to is
+ * if a large group of attributes is being added at once, and ordering may
+ * mean they are out of order.  Even then it is recommended to set check true
+ * and retry any that fail.  If check is true on all reference adds, it is
+ * impossible to get a either dangling reference attributes or circular
+ * references.
+ *
+ * @param at Attribute to add reference too.
+ * @param ref Name of attribute to reference.
+ * @param check Check reference is valid (Recommended)
+ */
 struct neb_elem *
 neb_attr_elem_reference_add(struct neb_attr *at, const char *ref, bool check){
 	struct neb_elem_ref *el;

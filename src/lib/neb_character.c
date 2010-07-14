@@ -67,7 +67,10 @@ neb_character_new(struct nebula *neb){
  *
  * Any existing name will be removed.  All characters should have a name, as
  * it is the only way of accessing a character unless you have a reference to
- * it directly.
+ * it directly.  Also names should be unique.
+ *
+ * You may wish to use a note to keep a real name, with a sequence number of
+ * similar as the name in this field.
  *
  * Setting a NULL name is not allowed.
  *
@@ -97,7 +100,19 @@ neb_character_name_get(struct neb_character *nc){
 	return NULL;
 }
 
-
+/**
+ * Find a character by name.
+ *
+ * Note that this finds the first character with a given name.  If there are
+ * multiple characters with the same name, there is no guarantee the correct
+ * one will be loaded.
+ *
+ * Names are case sensitive, and must be non-NULL.
+ *
+ * @param neb Nebula instance.
+ * @param name Name to search for.
+ * @return character, or NULL on error or not found.
+ */
 struct neb_character *
 neb_character_get(struct nebula *neb, const char *name){
 	Eina_List *l;
@@ -112,7 +127,19 @@ neb_character_get(struct nebula *neb, const char *name){
 	return NULL;
 }
 
-
+/**
+ * Adds a new attribute to the given character.
+ *
+ * The name given for the attribute must be unique, if not this call will
+ * fail.
+ *
+ * Attribute names are persistent and can not be changed once they are created
+ * (otherwise references would be lost).
+ *
+ * @param nc Nebula character.
+ * @param name Name of attribute.
+ * @return New attribute, or NULL on error.
+ */
 struct neb_attr *
 neb_character_attr_add(struct neb_character *nc, const char *name){
 	struct neb_attr *attr;
@@ -137,6 +164,16 @@ neb_character_attr_add(struct neb_character *nc, const char *name){
 	return attr;
 }
 
+/**
+ * Get a particular attribute.
+ *
+ * The attribute handle is normally used to add elements, filters or tags to.
+ * Alternatively the value can be got by calling neb_attr_value_get().
+ * 
+ * @param nc Character to get attribute off
+ * @param name Name of attribute.
+ * @return Attribute or NULL on error.
+ */
 struct neb_attr *
 neb_character_attr_get(struct neb_character *nc, const char *name){
 	struct neb_attr *attr;
@@ -152,6 +189,18 @@ neb_character_attr_get(struct neb_character *nc, const char *name){
 	return NULL;
 }
 
+/**
+ * Gets the value of an attribute.
+ * 
+ * Note that on error this function returns -1.  Currently the only error
+ * possible is a NULL attribute, or broken reference.
+ *
+ * The API will probably change in future to allow an error return value.
+ *
+ * @apram attr Attribute to get
+ * @return Attribute value, or -1 on error.
+ * @todo Handle errors in a sane manner
+ */
 int
 neb_attr_value_get(struct neb_attr *attr){
 	int value = 0;
@@ -253,8 +302,10 @@ neb_attribute_element_append(struct neb_attr *attr, struct neb_elem *el){
 
 
 
-
-
+/**
+ * Add a note to the given character.
+ *
+ */
 struct neb_note *
 neb_character_note_add(struct neb_character *nc, const char *key){
 	struct neb_note *note;
