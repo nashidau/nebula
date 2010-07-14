@@ -133,6 +133,7 @@ el_ref_value_get(struct neb_elem *el){
 	struct neb_attr *at;
 
 	ref = (struct neb_elem_ref *)el;
+	/* FIXME: Error handling */
 	at = neb_character_attr_get(ref->ch, ref->ref);
 
 	return neb_attr_value_get(at);
