@@ -1,4 +1,8 @@
-
+/**
+ * @file neb_character.h
+ *
+ * Character management for nebula.
+ */
 #include <Eina.h>
 
 #include <stdbool.h>
@@ -29,6 +33,15 @@ struct neb_note {
 };
 
 
+/**
+ * Create a new character and add it to nebula.
+ *
+ * This character will initially have no attributes and the name will be set
+ * to NULL.
+ *
+ * @param neb Nebula instance to add character to to.
+ * @return New character.
+ */
 struct neb_character *
 neb_character_new(struct nebula *neb){
 	struct neb_character *nc;
@@ -49,15 +62,35 @@ neb_character_new(struct nebula *neb){
 	return nc;
 }
 
+/**
+ * Set the name of a character.
+ *
+ * Any existing name will be removed.  All characters should have a name, as
+ * it is the only way of accessing a character unless you have a reference to
+ * it directly.
+ *
+ * Setting a NULL name is not allowed.
+ *
+ * @param nc Nebula character.
+ * @param name Name to set on character.
+ * @return 0 on success, or -1 on error.
+ */
 int
 neb_character_name_set(struct neb_character *nc, const char *name){
 	if (!nc || nc->magic != CHARACTER_MAGIC) return -1;
+	if (!name) return -1;
 
 	if (nc->name) free(nc->name);
 	nc->name = strdup(name);
 	return 0;
 }
 
+/**
+ * Get a characters name.
+ *
+ * @param nc Character to get name of.
+ * @return Name or NULL on error.
+ */
 const char *
 neb_character_name_get(struct neb_character *nc){
 	if (nc && nc->magic == CHARACTER_MAGIC) return nc->name;
