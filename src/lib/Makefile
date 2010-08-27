@@ -22,11 +22,16 @@ nebula.c: nebula.h
 
 install: ${LIBTARGET}
 	cp ${LIBTARGET} /usr/local/lib
+	cp nebula.pc /usr/local/lib/pkgconfig/
 	sudo ln -sf /usr/local/lib/libnebula.so.0 /usr/local/lib/libnebula.so
 	sudo ln -sf /usr/local/lib/libnebula.so.0 /usr/local/lib/lua/5.1/nebula.so
 	sudo ldconfig
 
-.PHONY: clean tags
+.PHONY: clean tags doc
+
+doc:
+	doxygen
+
 tags:
 	ctags -R . & cscope -R -b
 

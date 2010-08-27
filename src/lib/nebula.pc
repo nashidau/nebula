@@ -1,0 +1,10 @@
+# This is a comment
+prefix=/usr/local/
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: Nebula
+Description: RPG Character software
+Version: 0.1
+URL: http://www.nash.id.au/
+Libs: -L${libdir} -lnebula
