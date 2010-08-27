@@ -31,7 +31,9 @@ install: ${LIBTARGET}
 	sudo ln -sf /usr/local/lib/libnebula.so.0 /usr/local/lib/lua/5.1/nebula.so
 	sudo ldconfig
 
-.PHONY: clean tags doc
+.PHONY: clean tags doc scan
+scan: clean
+	scan-build make
 
 doc:
 	doxygen
