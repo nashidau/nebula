@@ -12,6 +12,9 @@ SOURCES=			\
 	neb_elem.c		\
 	luaneb.c
 
+HEADERS=			\
+	nebula.h
+
 ${LIBTARGET}: ${SOURCES}
 	${CC} -fPIC -Os -Wall -shared -Wl,-soname,${LIBTARGET} -o ${LIBTARGET} \
 		${CFLAGS} ${LDFLAGS}	\
@@ -22,6 +25,7 @@ nebula.c: nebula.h
 
 install: ${LIBTARGET}
 	cp ${LIBTARGET} /usr/local/lib
+	cp ${HEADERS} /usr/local/include/
 	cp nebula.pc /usr/local/lib/pkgconfig/
 	sudo ln -sf /usr/local/lib/libnebula.so.0 /usr/local/lib/libnebula.so
 	sudo ln -sf /usr/local/lib/libnebula.so.0 /usr/local/lib/lua/5.1/nebula.so
