@@ -197,7 +197,7 @@ neb_character_attr_get(struct neb_character *nc, const char *name){
  *
  * The API will probably change in future to allow an error return value.
  *
- * @apram attr Attribute to get
+ * @param attr Attribute to get
  * @return Attribute value, or -1 on error.
  * @todo Handle errors in a sane manner
  */
