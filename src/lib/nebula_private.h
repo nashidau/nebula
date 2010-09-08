@@ -1,10 +1,13 @@
 #include <Eina.h> // FIXME: ugle
+#include <lua.h>
 
 struct nebula;
 struct neb_character;
 
 struct nebula {
 	Eina_List *characters;
+
+	lua_State *L;
 };
 
 struct elem_type {

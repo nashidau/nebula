@@ -2,13 +2,12 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include <lua.h>
+
 #include <Eina.h>
 
 #include "nebula.h"
-
-struct nebula {
-	Eina_List *characters;
-};
+#include "nebula_private.h"
 
 /**
  * Initialise the nebula library.
