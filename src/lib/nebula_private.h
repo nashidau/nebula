@@ -37,3 +37,5 @@ struct neb_attr {
 
 int nebula_charater_add(struct nebula*, struct neb_character *);
 int neb_attribute_element_append(struct neb_attr *attr, struct neb_elem *el);
+
+int luaneb_init(struct nebula *);

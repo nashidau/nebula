@@ -15,13 +15,17 @@ SOURCES=			\
 HEADERS=			\
 	nebula.h
 
-${LIBTARGET}: ${SOURCES}
+${LIBTARGET}: ${SOURCES} helpers.o
 	${CC} -fPIC -Os -Wall -shared -Wl,-soname,${LIBTARGET} -o ${LIBTARGET} \
 		${CFLAGS} ${LDFLAGS}	\
-                ${SOURCES}
+                ${SOURCES} helpers.o
 
 
 nebula.c: nebula.h
+
+helpers.o: helpers.lua
+	ld -r -b binary -o helpers.o helpers.lua
+
 
 install: ${LIBTARGET}
 	cp ${LIBTARGET} /usr/local/lib
