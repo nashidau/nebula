@@ -14,7 +14,7 @@ struct nebula {
  * Initialise the nebula library.
  *
  * The nebula instance should be passed to most other nebula functions.
- * Multiple instnaces may exist, but data may not be used interchangably
+ * Multiple instances may exist, but data may not be used interchangeably
  * between them unless otherwise indicated.
  * 
  * Nebula will also init the Eina library.
