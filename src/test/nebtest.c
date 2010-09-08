@@ -30,6 +30,9 @@ static int ch_ref2(struct nebula *neb);
 static int ch_ref3(struct nebula *neb);
 static int ch_ref4(struct nebula *neb);
 
+static int ch_save1(struct nebula *neb);
+static int ch_save2(struct nebula *neb);
+
 
 
 #define TEST_NAME_A "Tento"
@@ -67,6 +70,9 @@ static const struct tests {
 	{ "Element Ref Add invalid",	ch_ref2 },
 	{ "Element Ref get",	ch_ref3 },
 	{ "Element ref total",	ch_ref4 },
+
+	{ "Character save 1",	ch_save1 },
+	{ "Character save 1",	ch_save2 },
 };
 #define N_TESTS (sizeof(tests)/sizeof(tests[0]))
 
@@ -370,5 +376,31 @@ ch_ref4(struct nebula *neb){
 		return -1;
 	}
 
+	return TEST_SUCCESS;
+}
+
+static int
+ch_save1(struct nebula *neb){
+	struct neb_character *ch;
+	struct neb_attr *at;
+	struct neb_elem *el;
+
+	ch = neb_character_new(neb);
+	neb_character_name_set(ch, TEST_NAME_A);
+	at = neb_character_attr_add(ch, TEST_ATTR_A);
+	neb_attr_elem_value_add(at, 7);
+	neb_attr_elem_value_add(at, 5);
+
+	at = neb_character_attr_add(ch, TEST_ATTR_B);
+	neb_attr_elem_value_add(at, 12);
+	el = neb_attr_elem_reference_add(at, TEST_ATTR_A, true);
+
+	nebula_character_save(ch, "/tmp/neb.nch");
+
+	return TEST_SUCCESS;
+}
+
+static int
+ch_save2(struct nebula *neb){
 	return TEST_SUCCESS;
 }
