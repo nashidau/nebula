@@ -73,11 +73,50 @@ static const struct luaL_Reg attrfns[] = {
 
 static struct nebula *neb;
 
+extern int _binary_helpers_lua_size;
+extern char _binary_helpers_lua_start[];
+extern char _binary_helpers_lua_end[];
+
+int
+luaneb_init(struct nebula *neb){
+	lua_State *L;
+	int rv;
+
+	if (!neb) return -1;
+	if (neb->L) return 0;
+
+	L = luaL_newstate();
+	neb->L = L;
+
+	lua_pushstring(L, "Nebula");  /* push address */
+	lua_pushlightuserdata(L, neb);  /* push value */
+	lua_settable(L, LUA_REGISTRYINDEX);
+
+	luaL_openlibs(L);
+
+	rv = luaL_dostring(L,"require[[nebula]]\n");
+	if (rv){
+		printf("Error with dostring: %s\n",lua_tostring(L,-1));
+		return -1;
+	}
+
+
+	return 0;
+}
+
+
 int
 luaopen_nebula(lua_State *lua){
-	luaL_openlib(lua, "nebula", fns, 0);
+	int len;
+	int rv;
 
-	neb = nebula_init();
+	lua_pushstring(lua, "Nebula");
+	lua_gettable(lua, LUA_REGISTRYINDEX);
+	if (lua_isnil(lua,-1))
+		nebula_init();
+	lua_pop(lua,1);
+
+	luaL_openlib(lua, "nebula", fns, 0);
 
 	// Create types: Character, Attribute & element for now
 	luaL_newmetatable(lua, LNEB_CHARACTER);
@@ -95,6 +134,16 @@ luaopen_nebula(lua_State *lua){
 
 	luaL_newmetatable(lua, LNEB_ELEMENT);
 	luaL_newmetatable(lua, LNEB_NOTE);
+
+	printf("doing loadbuffer\n");
+	len = _binary_helpers_lua_end - _binary_helpers_lua_start;
+	luaL_loadbuffer(lua, _binary_helpers_lua_start, len, "helpers.lua");
+	printf("Item on stack is a %s\n",lua_typename(lua, lua_type(lua, -1)));
+	rv = lua_pcall(lua,0,0,0);
+	if (rv){
+		printf("Error with helpers: %s\n",lua_tostring(lua,-1));
+		return -1;
+	}
 
 	return 1;
 }
@@ -245,7 +294,7 @@ lneb_elem_ref_add(lua_State *lua){
 	struct lneb_ref *lnr;
 	struct lneb_attr *lna;
 	const char *refto;
-	bool docheck
+	bool docheck;
 
 	lna = luaL_checkudata(lua, 1, LNEB_ATTRIBUTE);
 	refto = luaL_checkstring(lua,2);
@@ -260,5 +309,6 @@ lneb_elem_ref_add(lua_State *lua){
 	}
 	return 1;
 }
+
 
 
