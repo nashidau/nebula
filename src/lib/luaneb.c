@@ -6,6 +6,7 @@
 #include <lualib.h>
 
 #include "nebula.h"
+#include "nebula_private.h"
 
 static int lneb_character_add(lua_State *);
 static int lneb_character_get(lua_State *);
@@ -244,14 +245,15 @@ lneb_elem_ref_add(lua_State *lua){
 	struct lneb_ref *lnr;
 	struct lneb_attr *lna;
 	const char *refto;
+	bool docheck
 
 	lna = luaL_checkudata(lua, 1, LNEB_ATTRIBUTE);
-	/* FIXME: Support an object to ref too */
 	refto = luaL_checkstring(lua,2);
+	docheck = (bool)luaL_optint(lua,3,true);
 
 	lnr = lua_newuserdata(lua, sizeof(struct lneb_ref));
 	lnr->neb = lna->neb;
-	lnr->elem = neb_attr_elem_reference_add(lna->attr, refto, true);
+	lnr->elem = neb_attr_elem_reference_add(lna->attr, refto, docheck);
 	if (!lnr->elem){
 		/* FIXME clean up */
 		return luaL_error(lua, "Failed to add reference");
