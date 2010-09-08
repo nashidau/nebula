@@ -29,7 +29,7 @@ nebula_init(void){
 	neb = malloc(sizeof(struct nebula));
 	neb->characters = NULL;
 
-	luaneb_init(neb);
+//	luaneb_init(neb);
 
 	return neb;
 }

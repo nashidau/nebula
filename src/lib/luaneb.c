@@ -71,8 +71,6 @@ static const struct luaL_Reg attrfns[] = {
 #define LNEB_NOTE	"neb_note"
 
 
-static struct nebula *neb;
-
 extern int _binary_helpers_lua_size;
 extern char _binary_helpers_lua_start[];
 extern char _binary_helpers_lua_end[];
@@ -83,10 +81,8 @@ luaneb_init(struct nebula *neb){
 	int rv;
 
 	if (!neb) return -1;
-	if (neb->L) return 0;
 
-	L = luaL_newstate();
-	neb->L = L;
+	L = neb->L;
 
 	lua_pushstring(L, "Nebula");  /* push address */
 	lua_pushlightuserdata(L, neb);  /* push value */
@@ -104,17 +100,36 @@ luaneb_init(struct nebula *neb){
 	return 0;
 }
 
+static struct nebula *
+luaneb_get(lua_State *L){
+	struct nebula *neb;
+	lua_pushstring(L, "Nebula");  /* push address */
+	lua_gettable(L, LUA_REGISTRYINDEX);
+
+	neb = lua_touserdata(L,-1);
+	lua_pop(L,1);
+	return neb;
+}
 
 int
 luaopen_nebula(lua_State *lua){
+	struct nebula *neb;
 	int len;
 	int rv;
 
 	lua_pushstring(lua, "Nebula");
 	lua_gettable(lua, LUA_REGISTRYINDEX);
-	if (lua_isnil(lua,-1))
-		nebula_init();
+	if (lua_isnil(lua,-1)){
+		neb = nebula_init();
+		lua_pushstring(lua, "Nebula");  /* push address */
+		lua_pushlightuserdata(lua, neb);  /* push value */
+		lua_settable(lua, LUA_REGISTRYINDEX);
+	} else
+		neb = lua_touserdata(lua,-1);
 	lua_pop(lua,1);
+
+	neb->L = lua;
+//	luaneb_init(neb);
 
 	luaL_openlib(lua, "nebula", fns, 0);
 
@@ -135,10 +150,8 @@ luaopen_nebula(lua_State *lua){
 	luaL_newmetatable(lua, LNEB_ELEMENT);
 	luaL_newmetatable(lua, LNEB_NOTE);
 
-	printf("doing loadbuffer\n");
 	len = _binary_helpers_lua_end - _binary_helpers_lua_start;
 	luaL_loadbuffer(lua, _binary_helpers_lua_start, len, "helpers.lua");
-	printf("Item on stack is a %s\n",lua_typename(lua, lua_type(lua, -1)));
 	rv = lua_pcall(lua,0,0,0);
 	if (rv){
 		printf("Error with helpers: %s\n",lua_tostring(lua,-1));
@@ -160,8 +173,9 @@ lneb_character_add(lua_State *lua){
 	luaL_getmetatable(lua, LNEB_CHARACTER);
 	lua_setmetatable(lua, -2);
 
-	lnc->ch = neb_character_new(neb);
-	lnc->neb = neb;
+	/* FIXME: Inefficient getting twice */
+	lnc->ch = neb_character_new(luaneb_get(lua));
+	lnc->neb = luaneb_get(lua);
 
 	return 1;
 }
@@ -187,6 +201,8 @@ lneb_attr_add(lua_State *lua){
 	lna = lua_newuserdata(lua, sizeof(struct lneb_attr));
 	lna->neb = lnc->neb;
 	lna->attr = neb_character_attr_add(lnc->ch, name);
+
+	if (!lna->attr) return luaL_error(lua,"Unable to create attribute");
 
 	luaL_getmetatable(lua, LNEB_ATTRIBUTE);
 	lua_setmetatable(lua, -2);
@@ -271,8 +287,20 @@ lneb_unlock(lua_State *lua){
 
 
 static int
-lneb_elem_value_add(lua_State *lua){
-	return luaL_error(lua, "Not implemented");
+lneb_elem_value_add(lua_State *L){
+	struct lneb_ref *lnr;
+	struct lneb_attr *lna;
+	int val;
+
+	lna = luaL_checkudata(L, 1, LNEB_ATTRIBUTE);
+	val = luaL_checknumber(L, 2);
+
+	/* FIXME: Should be lnev_elem? */
+	lnr = lua_newuserdata(L, sizeof(struct lneb_ref));
+	lnr->neb = lna->neb;
+	lnr->elem = neb_attr_elem_value_add(lna->attr, val);
+
+	return 1;
 }
 
 static int
@@ -290,22 +318,26 @@ lneb_attr_tostring(lua_State *lua){
 
 /* FIXME: Optional argument for check */
 static int
-lneb_elem_ref_add(lua_State *lua){
+lneb_elem_ref_add(lua_State *L){
 	struct lneb_ref *lnr;
 	struct lneb_attr *lna;
 	const char *refto;
 	bool docheck;
 
-	lna = luaL_checkudata(lua, 1, LNEB_ATTRIBUTE);
-	refto = luaL_checkstring(lua,2);
-	docheck = (bool)luaL_optint(lua,3,true);
+	lna = luaL_checkudata(L, 1, LNEB_ATTRIBUTE);
+	refto = luaL_checkstring(L,2);
+	if (lua_isboolean(L,3))
+		docheck = lua_toboolean(L,3);
+	else
+		docheck = true;
 
-	lnr = lua_newuserdata(lua, sizeof(struct lneb_ref));
+	lnr = lua_newuserdata(L, sizeof(struct lneb_ref));
 	lnr->neb = lna->neb;
 	lnr->elem = neb_attr_elem_reference_add(lna->attr, refto, docheck);
 	if (!lnr->elem){
 		/* FIXME clean up */
-		return luaL_error(lua, "Failed to add reference");
+		printf("%p %s %d\n",lna->attr,refto, docheck);
+		return luaL_error(L, "Failed to add reference");
 	}
 	return 1;
 }
