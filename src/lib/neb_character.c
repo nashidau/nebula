@@ -33,6 +33,8 @@ struct neb_note {
 };
 
 
+static Eina_Bool attr_save(const void *list, void *attrv, void *fpv);
+
 /**
  * Create a new character and add it to nebula.
  *
@@ -326,4 +328,58 @@ neb_character_note_add(struct neb_character *nc, const char *key){
 }
 
 
+
+/**
+ * Save a character.
+ */
+int
+nebula_character_save(struct neb_character *ch, const char *file){
+	FILE *fp;
+	Eina_Iterator *iter;
+
+	printf("Save character\n");
+
+	if (!ch) return -1;
+
+	fp = fopen(file,"w");
+
+	fprintf(fp,"nebload{\n");
+	fprintf(fp,"  name=[[%s]],\n",ch->name);
+
+	/* FIXME: Notes */
+
+	/* Attrs */
+	fprintf(fp,"  attrs = {\n");
+	iter = eina_list_iterator_new(ch->attrs);
+	eina_iterator_foreach(iter, attr_save, fp);
+	fprintf(fp,"  },\n");
+
+	/* FIXME: escape lua magics */
+
+	fprintf(fp,"}\n");
+	fclose(fp);
+
+	return 0;
+}
+
+
+
+static Eina_Bool
+attr_save(const void *list, void *attrv, void *fpv){
+	struct neb_attr *attr = attrv;
+	struct neb_elem *elem;
+	Eina_List *l;
+
+	fprintf(fpv,"    {\n      name = [[%s]],\n",attr->name);
+
+	fprintf(fpv,"      elems = {\n");
+	EINA_LIST_FOREACH(attr->elems, l, elem){
+		elem->type->save(elem, fpv);
+	}
+	fprintf(fpv,"      }\n");
+
+
+	fprintf(fpv,"    },\n");
+	return true;
+}
 

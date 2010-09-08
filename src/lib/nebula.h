@@ -20,6 +20,9 @@ int neb_character_name_set(struct neb_character *nc, const char *name);
 const char * neb_character_name_get(struct neb_character *nc);
 struct neb_character *neb_character_get(struct nebula *nebula, const char *name);
 
+struct neb_character *neb_character_load(struct nebula *nebula, const char *name);
+int nebula_character_save(struct neb_character *ch, const char *file);
+
 struct neb_attr *neb_character_attr_add(struct neb_character *,
 		const char *name);
 struct neb_attr *neb_character_attr_get(struct neb_character *,

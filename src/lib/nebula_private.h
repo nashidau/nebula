@@ -10,6 +10,7 @@ struct nebula {
 struct elem_type {
 	size_t size;
 	int (*value_get)(struct neb_elem *el);
+	int (*save)(struct neb_elem *el, FILE *fp);
 };
 
 struct neb_elem {

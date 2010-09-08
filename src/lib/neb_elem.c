@@ -3,6 +3,7 @@
  */
 
 #include <stdbool.h>
+#include <stdio.h>
 
 
 #include "nebula.h"
@@ -10,6 +11,8 @@
 
 static int el_value_value_get(struct neb_elem *el);
 static int el_ref_value_get(struct neb_elem *el);
+static int el_value_save(struct neb_elem *el, FILE *fp);
+static int el_ref_save(struct neb_elem *el, FILE *fp);
 
 enum {
 	/* FIXME: Unify nebula magics */
@@ -32,10 +35,12 @@ static const struct elem_type types[] = {
 	[NEB_ELEM_VALUE] = {
 		.size = sizeof(struct neb_elem_value),
 		.value_get = el_value_value_get,
+		.save = el_value_save,
 	},
 	[NEB_ELEM_REFERENCE] = {
 		.size = sizeof(struct neb_elem_ref),
 		.value_get = el_ref_value_get,
+		.save = el_ref_save,
 	},
 };
 
@@ -137,4 +142,31 @@ el_ref_value_get(struct neb_elem *el){
 	at = neb_character_attr_get(ref->ch, ref->ref);
 
 	return neb_attr_value_get(at);
+}
+
+
+static int
+el_value_save(struct neb_elem *el, FILE *fp){
+	struct neb_elem_value *val;
+	if (!el || !fp) return -1;
+
+	val = (struct neb_elem_value *)el;
+
+	fprintf(fp,"        { type='value', value = %d },\n", val->value);
+	/* Common save here */
+
+	return 0;
+}
+
+static int
+el_ref_save(struct neb_elem *el, FILE *fp){
+	struct neb_elem_ref *ref;
+
+	ref = (struct neb_elem_ref *)el;
+
+	/* FIXME: Esacpe */
+	fprintf(fp,"        { type = 'ref', ref = [[%s]] },\n", ref->ref);
+	/* Common save here */
+
+	return 0;
 }
