@@ -7,8 +7,7 @@ function nebload(data)
     if not data then return nil,"need data" end
 
     ch = n.character_add()
---   if data.name then ch:name_set(data.name) end
-    print(data.name)
+    if data.name then ch:name_set(data.name) end
 
     if data.attrs then
 	for i,ad in ipairs(data.attrs) do
@@ -25,6 +24,7 @@ function nebload(data)
 	end
     end
 
+    print("...done loading")
 
     return ch
 end

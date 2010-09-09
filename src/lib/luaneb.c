@@ -10,6 +10,8 @@
 
 static int lneb_character_add(lua_State *);
 static int lneb_character_get(lua_State *);
+static int lneb_character_name_set(lua_State *);
+static int lneb_character_name_get(lua_State *);
 static int lneb_attr_add(lua_State *);
 static int lneb_attr_get(lua_State *);
 static int lneb_note_add(lua_State *);
@@ -47,6 +49,8 @@ static const struct luaL_Reg fns[] = {
 
 
 static const struct luaL_Reg charfns[] = {
+	{ "name_set",		lneb_character_name_set },
+	{ "name_get",		lneb_character_name_get },
 	{ "attr_add",		lneb_attr_add },
 	{ "attr_get",		lneb_attr_get },
 	{ "note_add",		lneb_note_add },
@@ -181,9 +185,36 @@ lneb_character_add(lua_State *lua){
 }
 
 static int
-lneb_character_get(lua_State *lua){
-
+lneb_character_get(lua_State *L){
+	return luaL_error(L,"Not implemented");
 	return 0;
+}
+
+
+static int
+lneb_character_name_set(lua_State *L){
+	struct lneb_char *lnc;
+	const char *name;
+
+	lnc = luaL_checkudata(L, 1, LNEB_CHARACTER);
+	name = luaL_checkstring(L,2);
+	luaL_argcheck(L, lnc && lnc->ch, 1, "Character must be initied");
+
+	neb_character_name_set(lnc->ch,name);
+
+	lua_pushboolean(L,1);
+	return 1;
+}
+
+static int
+lneb_character_name_get(lua_State *L){
+	struct lneb_char *lnc;
+
+	lnc = luaL_checkudata(L, 1, LNEB_CHARACTER);
+	luaL_argcheck(L, lnc && lnc->ch, 1, "Character must be initied");
+
+	lua_pushstring(L,neb_character_name_get(lnc->ch));
+	return 1;
 }
 
 
