@@ -345,6 +345,40 @@ neb_character_note_add(struct neb_character *nc, const char *key){
 
 
 /**
+ * Add a property to a character.
+ */
+int
+neb_attr_prop_add(struct neb_attr *attr, const char *prop,
+		const char *value){
+	struct neb_property *p;
+
+	if (!attr || !prop) return -1;
+
+	p = malloc(sizeof(struct neb_property));
+	p->prop = strdup(prop);
+	if (value) p->value = strdup(prop);
+
+	attr->props = eina_list_append(attr->props, p);
+	return 0;
+}
+
+const char *
+neb_attr_prop_get(struct neb_attr *attr, const char *prop){
+	struct neb_property *p;
+	Eina_List *l;
+
+	if (!attr || !prop) return NULL;
+
+	for (l = attr->props ; l ; l = l->next){
+		p = l->data;
+		if (strcmp(prop,p->prop) == 0)
+			return p->value ? : "";
+	}
+	return NULL;
+}
+
+
+/**
  * Add a character to be managed by nebula.
  *
  * If the character is already managed by another nebula instance, it should
@@ -416,6 +450,7 @@ nebula_character_save(struct neb_character *ch, const char *file){
 
 	/* FIXME: Notes */
 
+
 	/* Attrs */
 	fprintf(fp,"  attrs = {\n");
 	iter = eina_list_iterator_new(ch->attrs);
@@ -436,6 +471,7 @@ static Eina_Bool
 attr_save(const void *list, void *attrv, void *fpv){
 	struct neb_attr *attr = attrv;
 	struct neb_elem *elem;
+	struct neb_prop *prop;
 	Eina_List *l;
 
 	fprintf(fpv,"    {\n      name = [[%s]],\n",attr->name);
@@ -445,6 +481,18 @@ attr_save(const void *list, void *attrv, void *fpv){
 		elem->type->save(elem, fpv);
 	}
 	fprintf(fpv,"      }\n");
+
+	if (attr->props){
+		fprintf(fpv,"      props = {\n");
+		EINA_LIST_FOREACH(attr->props, l, prop){
+			fprintf(fpv,"        .[\"%s\"] = [[%s]],\n",
+					prop->prop,prop->value ? : "");
+
+		}
+		fprintf(fpv,"      }\n");
+	}
+	Eina_List *l;
+	struct neb_prop *prop;
 
 
 	fprintf(fpv,"    },\n");

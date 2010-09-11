@@ -31,8 +31,14 @@ struct neb_attr {
 	unsigned int lock;
 
 	Eina_List *elems;
+	/* FIXME: A hash */
+	Eina_List *props;
 };
 
+struct neb_property {
+	const char *prop;
+	const char *value;
+};
 
 
 int nebula_charater_add(struct nebula*, struct neb_character *);

@@ -43,6 +43,8 @@ int neb_attr_lock(struct neb_attr *attr);
 int neb_attr_unlock(struct neb_attr *attr);
 int neb_attr_lock_get(struct neb_attr *attr);
 const char *neb_attr_name_get(struct neb_attr *attr);
+int neb_attr_prop_add(struct neb_attr *, const char *prop, const char *value);
+const char *neb_attr_prop_get(struct neb_attr *attr, const char *prop);
 
 int neb_elem_ref_filter_set(struct neb_elem *elem, const char *filter);
 
