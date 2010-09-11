@@ -4,13 +4,9 @@
 #include <Elementary.h>
 #include <nebula.h>
 
+#include "etac.h"
 
 #define DEBUG(...) printf(__VA_ARGS__)
-
-struct etac {
-	struct nebula *neb;
-	struct neb_character *chr;
-};
 
 static void usage(const char *progname);
 int window_create(struct etac *etac);
@@ -36,7 +32,15 @@ elm_main(int argc, char **argv){
 		return 1;
 	}
 
+	etac->chr = neb_character_load(etac->neb, argv[1]);
+	if (!etac->chr){
+		fprintf(stderr,"Unable to load character %s\n",argv[1]);
+		return 1;
+	}
+
 	window_create(etac);
+
+	etac_chr_set(etac);
 
 	elm_run();
 	elm_shutdown();
@@ -45,6 +49,8 @@ elm_main(int argc, char **argv){
 
 }
 ELM_MAIN()
+
+
 
 static void
 win_main_del(void *data, Evas_Object *obj, void *event_info) {
@@ -76,6 +82,7 @@ window_create(struct etac *etac){
 	evas_object_show(gl);
 	elm_box_pack_start(bx, gl);
 
+	etac->gl = gl;
 
 	evas_object_size_hint_min_set(bg, 480, 640);
 	evas_object_show(win);

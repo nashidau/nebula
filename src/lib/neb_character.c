@@ -411,3 +411,12 @@ attr_save(const void *list, void *attrv, void *fpv){
 	return true;
 }
 
+
+
+
+Eina_Iterator *
+neb_character_attr_iter_new(struct neb_character *nch){
+	if (!nch) return NULL;
+
+	return eina_list_iterator_new(nch->attrs);
+}

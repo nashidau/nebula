@@ -76,13 +76,5 @@ nebula_charater_add(struct nebula *neb, struct neb_character *ch){
 	return 0;
 }
 
-/**
- * Load a character.
- */
-struct neb_character *
-neb_character_load(struct nebula *nebula, const char *name){
-	printf("not implemented\n");
-	return NULL;
-}
 
 

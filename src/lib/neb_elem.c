@@ -29,6 +29,7 @@ struct neb_elem_ref {
 
 	struct neb_character *ch;
 	const char *ref;
+	char *filter;
 };
 
 static const struct elem_type types[] = {
@@ -165,8 +166,42 @@ el_ref_save(struct neb_elem *el, FILE *fp){
 	ref = (struct neb_elem_ref *)el;
 
 	/* FIXME: Esacpe */
-	fprintf(fp,"        { type = 'ref', ref = [[%s]] },\n", ref->ref);
+	fprintf(fp,"        { type = 'ref', ref = [[%s]]",ref->ref);
+	if (ref->filter)
+		fprintf(fp," filter = [[%s]]",ref->filter);
+	fprintf(fp," },\n");
 	/* Common save here */
 
 	return 0;
+}
+
+
+/**
+ * Add a filter to a reference.
+ *
+ * If a filter is already set, it will be deleted.
+ * A NULL filter, clears the existing filter.
+ *
+ * @todo Note on what filters do
+ *
+ * @param el Reference element to free.
+ * @param filter Filter to set.
+ * @param 0 on success, -1 on error.
+ */
+int
+neb_elem_ref_filter_set(struct neb_elem *el, const char *filter){
+	struct neb_elem_ref *ref;
+
+	/* FIXME: Magic check */
+	ref = (struct neb_elem_ref *)el;
+
+	if (ref->filter){
+		free(ref->filter);
+		ref->filter = NULL;
+	}
+
+	if (!filter) return 0;
+
+	ref->filter = strdup(filter);
+	return ref->filter ? 0 : -1;
 }

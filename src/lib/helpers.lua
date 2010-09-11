@@ -29,6 +29,7 @@ function nebload(data)
     end
 
     print("...done loading")
+    print(ch)
 
     return ch
 end

@@ -93,12 +93,17 @@ luaneb_init(struct nebula *neb){
 	if (!neb) return -1;
 
 	L = neb->L;
+	if (!L){
+		L = luaL_newstate();
+		if (!L) return -1;
+		neb->L = L;
+		luaL_openlibs(L);
+	}
 
 	lua_pushstring(L, "Nebula");  /* push address */
 	lua_pushlightuserdata(L, neb);  /* push value */
 	lua_settable(L, LUA_REGISTRYINDEX);
 
-	luaL_openlibs(L);
 
 	rv = luaL_dostring(L,"require[[nebula]]\n");
 	if (rv){
@@ -108,6 +113,14 @@ luaneb_init(struct nebula *neb){
 
 
 	return 0;
+}
+
+struct neb_character *
+luaneb_tocharacter(lua_State *L, int index){
+	struct lneb_char *lnc;
+	if (!L) return NULL;
+	lnc = luaL_checkudata(L,index,LNEB_CHARACTER);
+	return lnc->ch;
 }
 
 static struct nebula *
