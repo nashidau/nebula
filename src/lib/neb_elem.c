@@ -189,7 +189,7 @@ el_ref_save(struct neb_elem *el, FILE *fp){
 	/* FIXME: Esacpe */
 	fprintf(fp,"        { type = 'ref', ref = [[%s]]",ref->ref);
 	if (ref->filter)
-		fprintf(fp," filter = [[%s]]",ref->filter);
+		fprintf(fp,", filter = [[%s]]",ref->filter);
 	fprintf(fp," },\n");
 	/* Common save here */
 
