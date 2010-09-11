@@ -35,15 +35,41 @@ function nebload(data)
 end
 
 
+local harpbonustable = {
+    -18, -18, -18, -18, -18, -16, -16, -16, -16, -16,
+    -14, -14, -14, -14, -14, -12, -12, -12, -12, -12,
+    -10, -10, -10, -10, -10,  -8,  -8,  -8,  -8,  -8,
+     -6,  -6,  -6,  -6,  -6,  -4,  -4,  -4,  -4,  -4,
+     -2,  -2,  -2,  -2,  -2,   0,   0,   0,   0,   0,
+      1,   1,   1,   1,   1,   2,   2,   2,   2,   2,
+      3,   3,   3,   3,   3,   4,   4,   4,   4,   4,
+      5,   5,   5,   5,   5,   6,   6,   6,   6,   6,
+      7,   7,   7,   7,   7,   8,   8,   8,   8,   8,
+      9,   9,   9,   9,   9,  10,  10,  10,  10,  10,
+}
+
 
 function harpstatfilter(value)
-    return (value - 50) / 5
+    if value > 100 then return value - 90 end
+    if value < 1 then return -18 end
+    return harpbonustable[value];
 end
 
 function harpkillranks(ranks)
-    return ranks * 5
+    if ranks < 1 then return -25 end
+    if ranks < 11 then return ranks * 5 end
+    if ranks < 21 then return ranks * 2 + 30 end
+    return ranks + 50
 end
 
+function harpdpfilter(value)
+    local v = harpstatfilter(value)
+    if v < 1 then
+	return 0
+    else
+	return v
+    end
+end
 
 
 
