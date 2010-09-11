@@ -121,6 +121,11 @@ function harp(ch)
 
     -- Add system template
  --   ch:note_add("Nebula.system.template","HARP")
+    local at = ch:attr_add("DP")
+    at:prop_add("Group","System")
+    for i,sinfo in ipairs(stats) do
+	at:ref_add{ref=sinfo.stat.name, filter="harpdpfilter", check=false}
+    end
 
     -- Stats 
     for i,sinfo in ipairs(stats) do
@@ -128,12 +133,12 @@ function harp(ch)
 	local at = ch:attr_add(sinfo.stat)
 	at:prop_add("Group","Stats")
 	at:prop_add("Subvalue",sinfo.bonus)
-	    at:value_add(math.random(1,100))
+	    at:value_add(math.random(40,100))
 
 	print("  bonus is ",sinfo.bonus)    
 	local at = ch:attr_add(sinfo.bonus)
 	at:ref_add{ref=sinfo.stat.name,filter="harpstatfilter"}
-	    at:value_add(math.random(0,4))
+--	    at:value_add(math.random(0,4))
 
     end
 
