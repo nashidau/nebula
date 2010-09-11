@@ -137,12 +137,33 @@ static int
 el_ref_value_get(struct neb_elem *el){
 	struct neb_elem_ref *ref;
 	struct neb_attr *at;
+	struct nebula *neb;
+	int val;
 
 	ref = (struct neb_elem_ref *)el;
 	/* FIXME: Error handling */
 	at = neb_character_attr_get(ref->ch, ref->ref);
 
-	return neb_attr_value_get(at);
+	val = neb_attr_value_get(at);
+
+	if (ref->filter){
+		/* FIXME: Look up system */
+		neb = neb_character_neb_get(ref->ch);
+
+		lua_getglobal(neb->L,ref->filter);
+		if (lua_isfunction(neb->L,-1)){
+			lua_pushnumber(neb->L, val);
+luaneb_stackdump(neb->L);
+			lua_pcall(neb->L,1,1,0);
+			printf("Filter %s: %d -> ",ref->filter, val);
+			val = lua_tonumber(neb->L,-1);
+			printf(" %d\n",val);
+		} else {
+			printf("Didn't get filter %s\n",ref->filter);
+		}
+	}
+
+	return val;
 }
 
 

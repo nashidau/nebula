@@ -24,6 +24,8 @@ struct neb_character {
 
 	char *name;
 
+	struct nebula *neb;
+
 	Eina_List *attrs;
 	Eina_List *notes;
 };
@@ -131,6 +133,16 @@ neb_character_get(struct nebula *neb, const char *name){
 			return nc;
 	}
 	return NULL;
+}
+
+/**
+ *
+ */
+struct nebula *
+neb_character_neb_get(struct neb_character *nc){
+	if (!nc) return NULL;
+
+	return nc->neb;
 }
 
 /**
@@ -332,6 +344,31 @@ neb_character_note_add(struct neb_character *nc, const char *key){
 }
 
 
+/**
+ * Add a character to be managed by nebula.
+ *
+ * If the character is already managed by another nebula instance, it should
+ * be removed first.
+ *
+ * Note the neb_character_new() automatically adds the character to a nebula
+ * instance.
+ *
+ * @param neb Nebula instance.
+ * @param ch Character to add.
+ * @return -1 on error, 0 otherwise.
+ */
+int
+nebula_charater_add(struct nebula *neb, struct neb_character *ch){
+	if (!neb) return -1;
+	if (!ch) return -1;
+
+	neb->characters = eina_list_append(neb->characters, ch);
+	ch->neb = neb;
+	return 0;
+}
+
+
+
 
 /**
  * Load a character.
@@ -352,6 +389,9 @@ luaneb_stackdump(neb->L);
 
 	ch = luaneb_tocharacter(neb->L,1);
 	lua_pop(neb->L,1);
+
+	rv = nebula_charater_add(neb,ch);
+
 	return ch;
 }
 
