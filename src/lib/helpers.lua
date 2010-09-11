@@ -14,7 +14,11 @@ function nebload(data)
 	    local at = ch:attr_add(ad.name)
 	    for k,ed in ipairs(ad.elems) do
 		if ed.type == "ref" then
-		    at:ref_add(ed.ref, false)
+		    local r = {}
+		    r.ref = ed.ref
+		    r.filter = ed.filter
+		    r.check = false
+		    at:ref_add(r)
 		elseif ed.type == "value" then
 		    at:value_add(ed.value)
 		else
