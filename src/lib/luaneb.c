@@ -10,6 +10,7 @@
 
 static int lneb_character_add(lua_State *);
 static int lneb_character_get(lua_State *);
+static int lneb_character_save(lua_State *);
 static int lneb_character_name_set(lua_State *);
 static int lneb_character_name_get(lua_State *);
 static int lneb_attr_add(lua_State *);
@@ -47,6 +48,7 @@ static const struct luaL_Reg fns[] = {
 	{ "character_add",	lneb_character_add },
 	{ "character_get",	lneb_character_get },
 
+
 	{ NULL,		NULL },
 };
 
@@ -54,6 +56,7 @@ static const struct luaL_Reg fns[] = {
 static const struct luaL_Reg charfns[] = {
 	{ "name_set",		lneb_character_name_set },
 	{ "name_get",		lneb_character_name_get },
+	{ "save",		lneb_character_save },
 	{ "attr_add",		lneb_attr_add },
 	{ "attr_get",		lneb_attr_get },
 	{ "note_add",		lneb_note_add },
@@ -191,6 +194,29 @@ static int
 lneb_character_get(lua_State *L){
 	return luaL_error(L,"Not implemented");
 	return 0;
+}
+
+static int
+lneb_character_save(lua_State *L){
+	struct lneb_char *lnc;
+	const char *filename;
+	char buf[100];
+
+	lnc = luaL_checkudata(L,1,LNEB_CHARACTER);
+	if (lua_isstring(L,2)){
+		filename = lua_tostring(L,2);
+	} else if (neb_character_name_get(lnc->ch)){
+		snprintf(buf,100,"/tmp/%s.nch",neb_character_name_get(lnc->ch));
+		filename = buf;
+	} else {
+		snprintf(buf,100,"/tmp/test.nch");
+		filename = buf;
+	}
+
+	nebula_character_save(lnc->ch, filename);
+
+	lua_pushboolean(L,1);
+	return 1;
 }
 
 
