@@ -363,11 +363,18 @@ static int
 lneb_elem_ref_add(lua_State *L){
 	struct lneb_ref *lnr;
 	struct lneb_attr *lna;
-	const char *refto;
+	const char *refto = NULL;
 	bool docheck;
 
 	lna = luaL_checkudata(L, 1, LNEB_ATTRIBUTE);
-	refto = luaL_checkstring(L,2);
+	if (lua_istable(L,2)){
+		lua_getfield(L,2,"ref");
+		refto = lua_tostring(L,-1);
+	} else {
+		refto = luaL_checkstring(L,2);
+	}
+	luaL_argcheck(L, refto, 1, "Need something to reference to");
+
 	if (lua_isboolean(L,3))
 		docheck = lua_toboolean(L,3);
 	else
