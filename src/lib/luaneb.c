@@ -225,12 +225,20 @@ static int
 lneb_attr_add(lua_State *L){
 	struct lneb_char *lnc;
 	struct lneb_attr *lna;
-	const char *name;
+	const char *name = NULL;
+	int extra = 0;
 
 	lnc = luaL_checkudata(L, 1, LNEB_CHARACTER);
-	name = luaL_checkstring(L,2);
+	if (lua_istable(L,2)){
+		lua_getfield(L,2,"name");
+		name = lua_tostring(L,-1);
+		extra = 1;
+	} else if (lua_isstring(L,2)){
+		name = luaL_checkstring(L,2);
+	}
 	luaL_argcheck(L, name && strlen(name) > 1,2,
 			"Must pass attribute name");
+
 
 	lna = lua_newuserdata(L, sizeof(struct lneb_attr));
 	lna->neb = lnc->neb;
