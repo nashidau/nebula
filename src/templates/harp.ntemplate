@@ -146,6 +146,7 @@ function harp(ch)
 	    local rname = skill.skill .. " ranks"
 	    at:prop_add("Group",gname)
 	    at:prop_add("Subvalue",rname)
+	    at:prop_add("Format","%+d (%d ranks)")
 	    local atr = ch:attr_add(rname)
 	    local r = {ref=rname,filter="harpkillranks"}
 	    at:ref_add(r)
