@@ -157,6 +157,7 @@ luaneb_stackdump(neb->L);
 			lua_pcall(neb->L,1,1,0);
 			printf("Filter %s: %d -> ",ref->filter, val);
 			val = lua_tonumber(neb->L,-1);
+			lua_pop(neb->L,1);
 			printf(" %d\n",val);
 		} else {
 			printf("Didn't get filter %s\n",ref->filter);
