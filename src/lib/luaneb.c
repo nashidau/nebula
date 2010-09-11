@@ -15,6 +15,7 @@ static int lneb_character_name_set(lua_State *);
 static int lneb_character_name_get(lua_State *);
 static int lneb_attr_add(lua_State *);
 static int lneb_attr_get(lua_State *);
+static int lneb_attr_prop_add(lua_State *);
 static int lneb_note_add(lua_State *);
 static int lneb_attr_value_get(lua_State *);
 static int lneb_elem_value_add(lua_State *);
@@ -64,8 +65,9 @@ static const struct luaL_Reg charfns[] = {
 };
 
 static const struct luaL_Reg attrfns[] = {
-	{ "value_get",		lneb_attr_value_get },
+	{ "value_get",	lneb_attr_value_get },
 	{ "value_add",	lneb_elem_value_add },
+	{ "prop_add",	lneb_attr_prop_add },
 	{ "ref_add",	lneb_elem_ref_add },
 	{ "lock",	lneb_lock },
 	{ "unlock",	lneb_unlock },
@@ -294,6 +296,23 @@ lneb_attr_add(lua_State *L){
 	luaL_getmetatable(L, LNEB_ATTRIBUTE);
 	lua_setmetatable(L, -2);
 
+	if (extra){
+		/* Do properties */
+		lua_getfield(L,2,"props");
+		/* FIXME: do in a function */
+		if (lua_istable(L,-1)){
+			lua_pushnil(L);
+			while (lua_next(L, -2) != 0) {
+				const char *p,*v;
+				p = lua_tostring(L,-2);
+				v = lua_tostring(L,-1);
+				neb_attr_prop_add(lna->attr,p,v);
+				lua_pop(L, 1);
+			}
+		}
+		lua_pop(L,1);
+	}
+
 	return 1;
 }
 static int
@@ -322,12 +341,33 @@ lneb_attr_get(lua_State *lua){
 
 	return 1;
 }
+
+static int
+lneb_attr_prop_add(lua_State *L){
+	struct lneb_attr *lna;
+	const char *p,*v;
+	int rv;
+
+	lna = luaL_checkudata(L,1,LNEB_ATTRIBUTE);
+	p = luaL_checkstring(L,2);
+	v = lua_tostring(L,3); /* Value optional */
+
+	rv = neb_attr_prop_add(lna->attr, p, v);
+
+	lua_pushboolean(L,!rv);
+	return 1;
+}
+
+
 static int
 lneb_note_add(lua_State *lua){
 	return luaL_error(lua, "note add: Not implemented");
 	lua_pushnil(lua);
 	return 1;
 }
+
+
+
 static int
 lneb_attr_value_get(lua_State *lua){
 	struct lneb_attr *lna;
