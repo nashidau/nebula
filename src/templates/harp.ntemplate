@@ -126,6 +126,8 @@ function harp(ch)
     for i,sinfo in ipairs(stats) do
 	print("Adding",sinfo.stat.name)
 	local at = ch:attr_add(sinfo.stat)
+	at:prop_add("Group","Stats")
+	at:prop_adD("Subvalue",sinfo.bonus)
 	    at:value_add(math.random(1,100))
 
 	print("  bonus is ",sinfo.bonus)    
@@ -142,6 +144,8 @@ function harp(ch)
 	    print("",skill.skill)
 	    local at = ch:attr_add(skill.skill)
 	    local rname = skill.skill .. " ranks"
+	    at:prop_add("Group",gname)
+	    at:prop_adD("Subvalue",rname)
 	    local atr = ch:attr_add(rname)
 	    local r = {ref=rname,filter="harpkillranks"}
 	    at:ref_add(r)
