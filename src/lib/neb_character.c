@@ -356,7 +356,7 @@ neb_attr_prop_add(struct neb_attr *attr, const char *prop,
 
 	p = malloc(sizeof(struct neb_prop));
 	p->prop = strdup(prop);
-	if (value) p->value = strdup(prop);
+	if (value) p->value = strdup(value);
 
 	attr->props = eina_list_append(attr->props, p);
 	return 0;
