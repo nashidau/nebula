@@ -149,6 +149,6 @@ end
 
 ch = nebula.character_add("Harp test")
 harp(ch)
-ch:save()
+ch:save("/tmp/harp.nch")
 
 -- vim: set sw=4 sts=4 syn=lua : --
