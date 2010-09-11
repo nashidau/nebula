@@ -54,27 +54,5 @@ nebula_free(struct nebula *neb){
 	return 0;
 }
 
-/**
- * Add a character to be managed by nebula.
- *
- * If the character is already managed by another nebula instance, it should
- * be removed first.
- *
- * Note the neb_character_new() automatically adds the character to a nebula
- * instance.
- *
- * @param neb Nebula instance.
- * @param ch Character to add.
- * @return -1 on error, 0 otherwise.
- */
-int
-nebula_charater_add(struct nebula *neb, struct neb_character *ch){
-	if (!neb) return -1;
-	if (!ch) return -1;
-
-	neb->characters = eina_list_append(neb->characters, ch);
-	return 0;
-}
-
 
 
