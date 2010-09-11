@@ -176,9 +176,13 @@ luaopen_nebula(lua_State *lua){
 static int
 lneb_character_add(lua_State *lua){
 	struct lneb_char *lnc;
+	const char *name = NULL;
 
 	lnc = lua_newuserdata(lua, sizeof(struct lneb_char));
 	if (!lnc) return luaL_error(lua, "Memory error");
+
+	if (lua_isstring(lua,1))
+		name = lua_tostring(lua,1);
 
 	luaL_getmetatable(lua, LNEB_CHARACTER);
 	lua_setmetatable(lua, -2);
@@ -186,6 +190,8 @@ lneb_character_add(lua_State *lua){
 	/* FIXME: Inefficient getting twice */
 	lnc->ch = neb_character_new(luaneb_get(lua));
 	lnc->neb = luaneb_get(lua);
+
+	if (name) neb_character_name_set(lnc->ch, name);
 
 	return 1;
 }
