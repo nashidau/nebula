@@ -8,6 +8,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+
 #include "nebula.h"
 #include "nebula_private.h"
 
@@ -330,6 +334,30 @@ neb_character_note_add(struct neb_character *nc, const char *key){
 
 
 /**
+ * Load a character.
+ */
+struct neb_character *
+neb_character_load(struct nebula *neb, const char *name){
+	struct neb_character *ch;
+	int rv;
+	if (!neb) return NULL;
+	if (!name) return NULL;
+
+	if (!neb->L)
+		luaneb_init(neb);
+
+	rv = luaL_dofile(neb->L, name);
+printf("%d rv\n",rv);
+luaneb_stackdump(neb->L);
+
+	ch = luaneb_tocharacter(neb->L,1);
+	lua_pop(neb->L,1);
+	return ch;
+}
+
+
+
+/**
  * Save a character.
  */
 int
@@ -343,7 +371,7 @@ nebula_character_save(struct neb_character *ch, const char *file){
 
 	fp = fopen(file,"w");
 
-	fprintf(fp,"nebload{\n");
+	fprintf(fp,"return nebload{\n");
 	fprintf(fp,"  name=[[%s]],\n",ch->name);
 
 	/* FIXME: Notes */
