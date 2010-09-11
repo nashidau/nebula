@@ -479,7 +479,7 @@ attr_save(const void *list, void *attrv, void *fpv){
 	if (attr->props){
 		fprintf(fpv,"      props = {\n");
 		EINA_LIST_FOREACH(attr->props, l, prop){
-			fprintf(fpv,"        .[\"%s\"] = [[%s]],\n",
+			fprintf(fpv,"        [\"%s\"] = [[%s]],\n",
 					prop->prop,prop->value ? : "");
 
 		}
