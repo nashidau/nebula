@@ -219,24 +219,24 @@ lneb_character_name_get(lua_State *L){
 
 
 static int
-lneb_attr_add(lua_State *lua){
+lneb_attr_add(lua_State *L){
 	struct lneb_char *lnc;
 	struct lneb_attr *lna;
 	const char *name;
 
-	lnc = luaL_checkudata(lua, 1, LNEB_CHARACTER);
-	name = luaL_checkstring(lua,2);
-	luaL_argcheck(lua, name && strlen(name) > 1,2,
+	lnc = luaL_checkudata(L, 1, LNEB_CHARACTER);
+	name = luaL_checkstring(L,2);
+	luaL_argcheck(L, name && strlen(name) > 1,2,
 			"Must pass attribute name");
 
-	lna = lua_newuserdata(lua, sizeof(struct lneb_attr));
+	lna = lua_newuserdata(L, sizeof(struct lneb_attr));
 	lna->neb = lnc->neb;
 	lna->attr = neb_character_attr_add(lnc->ch, name);
 
-	if (!lna->attr) return luaL_error(lua,"Unable to create attribute");
+	if (!lna->attr) return luaL_error(L,"Unable to create attribute");
 
-	luaL_getmetatable(lua, LNEB_ATTRIBUTE);
-	lua_setmetatable(lua, -2);
+	luaL_getmetatable(L, LNEB_ATTRIBUTE);
+	lua_setmetatable(L, -2);
 
 	return 1;
 }
