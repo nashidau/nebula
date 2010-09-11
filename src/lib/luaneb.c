@@ -22,6 +22,9 @@ static int lneb_lock(lua_State *);
 static int lneb_unlock(lua_State *);
 static int lneb_attr_tostring(lua_State *);
 
+int luaneb_stackdump(lua_State* l);
+
+
 struct lneb_char {
 	struct nebula *neb;
 	struct neb_character *ch;
@@ -374,4 +377,29 @@ lneb_elem_ref_add(lua_State *L){
 }
 
 
+int
+luaneb_stackdump(lua_State* l){
+    int i;
+    int top = lua_gettop(l);
 
+    printf("total in stack %d\n",top);
+    for (i = top; i ; i--) {
+        int t = lua_type(l, i);
+        switch (t) {
+            case LUA_TSTRING:  /* strings */
+                printf("%2d  string: '%s'\n", i,lua_tostring(l, i));
+                break;
+            case LUA_TBOOLEAN:  /* booleans */
+                printf("%2d  boolean %s\n",i,
+				lua_toboolean(l, i) ? "true" : "false");
+                break;
+            case LUA_TNUMBER:  /* numbers */
+                printf("%2d  number: %g\n", i,lua_tonumber(l, i));
+                break;
+            default:  /* other values */
+                printf("%2d  %s\n", i,lua_typename(l, t));
+                break;
+        }
+    }
+    return top;
+}
