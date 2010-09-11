@@ -103,7 +103,11 @@ skills = {
 }
 
 function harpstatfilter(value)
-    return 5
+    return (value - 50) / 5
+end
+
+function harpkillranks(ranks)
+    return ranks * 5
 end
 
 
@@ -122,10 +126,13 @@ function harp(ch)
     for i,sinfo in ipairs(stats) do
 	print("Adding",sinfo.stat.name)
 	local at = ch:attr_add(sinfo.stat)
+	    at:value_add(math.random(1,100))
 
 	print("  bonus is ",sinfo.bonus)    
 	local at = ch:attr_add(sinfo.bonus)
-	at:ref_add{ref=sinfo.stat.name,filter=harpstatfilter}
+	at:ref_add{ref=sinfo.stat.name,filter="harpstatfilter"}
+	    at:value_add(math.random(0,4))
+
     end
 
     -- Skills
@@ -134,6 +141,12 @@ function harp(ch)
 	for k,skill in ipairs(group) do
 	    print("",skill.skill)
 	    local at = ch:attr_add(skill.skill)
+	    local rname = skill.skill .. " ranks"
+	    local atr = ch:attr_add(rname)
+	    local r = {ref=rname,filter="harpkillranks"}
+	    at:ref_add(r)
+		-- debug
+		atr:value_add(math.random(1,10))
 	    for l,ref in ipairs(skill.stats) do
 		local el = at:ref_add(ref)
 		if not el then
