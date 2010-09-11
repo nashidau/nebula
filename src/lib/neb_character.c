@@ -350,11 +350,11 @@ neb_character_note_add(struct neb_character *nc, const char *key){
 int
 neb_attr_prop_add(struct neb_attr *attr, const char *prop,
 		const char *value){
-	struct neb_property *p;
+	struct neb_prop *p;
 
 	if (!attr || !prop) return -1;
 
-	p = malloc(sizeof(struct neb_property));
+	p = malloc(sizeof(struct neb_prop));
 	p->prop = strdup(prop);
 	if (value) p->value = strdup(prop);
 
@@ -364,7 +364,7 @@ neb_attr_prop_add(struct neb_attr *attr, const char *prop,
 
 const char *
 neb_attr_prop_get(struct neb_attr *attr, const char *prop){
-	struct neb_property *p;
+	struct neb_prop *p;
 	Eina_List *l;
 
 	if (!attr || !prop) return NULL;
@@ -476,12 +476,6 @@ attr_save(const void *list, void *attrv, void *fpv){
 
 	fprintf(fpv,"    {\n      name = [[%s]],\n",attr->name);
 
-	fprintf(fpv,"      elems = {\n");
-	EINA_LIST_FOREACH(attr->elems, l, elem){
-		elem->type->save(elem, fpv);
-	}
-	fprintf(fpv,"      }\n");
-
 	if (attr->props){
 		fprintf(fpv,"      props = {\n");
 		EINA_LIST_FOREACH(attr->props, l, prop){
@@ -489,11 +483,14 @@ attr_save(const void *list, void *attrv, void *fpv){
 					prop->prop,prop->value ? : "");
 
 		}
-		fprintf(fpv,"      }\n");
+		fprintf(fpv,"      },\n");
 	}
-	Eina_List *l;
-	struct neb_prop *prop;
 
+	fprintf(fpv,"      elems = {\n");
+	EINA_LIST_FOREACH(attr->elems, l, elem){
+		elem->type->save(elem, fpv);
+	}
+	fprintf(fpv,"      }\n");
 
 	fprintf(fpv,"    },\n");
 	return true;

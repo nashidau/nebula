@@ -35,7 +35,7 @@ struct neb_attr {
 	Eina_List *props;
 };
 
-struct neb_property {
+struct neb_prop {
 	const char *prop;
 	const char *value;
 };
