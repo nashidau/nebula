@@ -136,7 +136,8 @@ attr_state_get(const void *eacv, Evas_Object *obj, const char *part){
 	struct etac_attr *eac = (void *)eacv;
 
 	ETAC_MAGIC_CHECK(eac, false);
-	printf("Part is %s\n",part);
+//	printf("Part is %s\n",part);
+
 
 	return true;
 }
@@ -186,7 +187,6 @@ etac_attr_append(const void *container, void *attrv, void *etacv){
 
 	group = neb_attr_prop_get(attr, "Group");
 	name = neb_attr_name_get(attr);
-	printf("Group for %s is %s\n",name, group);
 	if (!group) return true;
 
 	EINA_LIST_FOREACH(groups, l, grp){
@@ -200,8 +200,6 @@ etac_attr_append(const void *container, void *attrv, void *etacv){
 		grp->group = strdup(group);
 		groups = eina_list_append(groups, grp);
 	}
-
-	printf("Add attr %s\n",name);
 
 	eac = malloc(sizeof(struct etac_attr));
 	eac->etac = etac;

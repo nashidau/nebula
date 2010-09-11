@@ -155,10 +155,8 @@ el_ref_value_get(struct neb_elem *el){
 			/* FIXME: Make this a little more robust */
 			lua_pushnumber(neb->L, val);
 			lua_pcall(neb->L,1,1,0);
-			printf("Filter %s: %d -> ",ref->filter, val);
 			val = lua_tonumber(neb->L,-1);
 			lua_pop(neb->L,1);
-			printf(" %d\n",val);
 		} else {
 			printf("Didn't get filter %s\n",ref->filter);
 		}
