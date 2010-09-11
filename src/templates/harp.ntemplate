@@ -1,0 +1,154 @@
+
+
+stats = {
+    { stat = { name = "Strength" }, bonus = "St" },
+    { stat = { name = "Constitution" }, bonus = "Co" },
+    { stat = { name = "Agility" }, bonus = "Ag" },
+    { stat = { name = "Quickness" }, bonus = "Qu" },
+    { stat = { name = "Self Discipline" }, bonus = "SD" },
+    { stat = { name = "Reasoning" }, bonus = "Re" },
+    { stat = { name = "Intuition" }, bonus = "In" },
+    { stat = { name = "Presence" }, bonus = "Pr" },
+}
+
+
+
+skills = {
+    Artistic = {
+	{ skill="Acting",		    stats = { "Pr","In" }},
+	{ skill="Dancing",		    stats = { "Ag","Pr" }},
+	{ skill="Mimicry",		    stats = { "Pr","SD" }},
+     --   Play Instr:                  Pr-Ag
+     --   Play Instr:                  Pr-Ag
+	{ skill="Singing",		    stats = { "Pr","In" }},
+	{ skill="Storytelling",		    stats = { "Pr","In" }},
+    },
+    Athletic = {
+	{ skill="Acrobatics",		    stats = { "Ag","SD" }},
+	{ skill="Climbing",		    stats = { "Ag","St" }},
+	{ skill="Contortions",		    stats = { "Ag","SD" }},
+    },
+    Combat = {
+	{ skill="Brawling",		    stats = { "St","Ag" }},
+	{ skill="Martial Arts: Strikes",    stats = { "St","Ag" }},
+      --  MA Styles:                   SD/
+      --  MA Styles:                   SD/
+	{ skill="Martial Arts: Sweeps",	    stats = { "St","Ag" }},
+	{ skill="Weapon:",		    stats = { "St","Ag" }},
+--	{ skill="Weapon:",		    stats = { "St","Ag" }},
+--	{ skill="Weapon:",		    stats = { "St","Ag" }},
+--	{ skill="Weapon:",		    stats = { "St","Ag" }},
+    },
+    Concentration = {
+	{ skill="Chi Defense",		    stats = { "SD","In" }},
+	{ skill="Chi Focus",		    stats = { "SD","St" }},
+	{ skill="Chi Speed",		    stats = { "SD","Qu" }},
+	{ skill="Chi Strength",		    stats = { "SD","St" }},
+	{ skill="Mental Focus",		    stats = { "SD","SD" }},
+    },
+    General = {
+	{ skill="Appraisal",		    stats = { "Re","In" }},
+     --   Crafts:                      Re-Ag
+     --   Crafts:                      Re-Ag
+	{ skill="Healing",		    stats = { "Re","In" }},
+	{ skill="Herbcraft",		    stats = { "Re","In" }},
+      --  Mundane Lore:		     Re-Re
+      --  Mundane Lore:                Re-Re
+	{ skill="Perception",		    stats = { "In","SD" }},
+	{ skill="Resistance: Stamina",	    stats = { "Co","Co" }},
+	{ skill="Resistance: Will",	    stats = { "SD","SD" }},
+	{ skill="Resistance: Magic",	    stats = { "In","In" }},
+	{ skill="Rope Mastery",		    stats = { "Re","Ag" }},
+	{ skill="Signaling",		    stats = { "Re","In" }},
+    },
+    Influence = {
+	{ skill="Duping",		    stats = { "Pr","In" }},
+	{ skill="Public Speaking",	    stats = { "Pr","In" }},
+	{ skill="Trading",		    stats = { "Pr","In" }},
+    },
+    ["Mystical Arts"] = {
+--	Arcane Lore:	    Re-Re
+--	Arcane Lore:	    Re-Re
+	{ skill="Attunement",		    stats = { "In","In" }},
+	{ skill="Power Point Dev",	    stats = { "In","SD" }},
+	{ skill="Runes",		    stats = { "Re","In" }},
+    },
+    Outdoor = {
+	{ skill="Animal Handling",	    stats = { "Pr","In" }},
+	{ skill="Beastmastery",		    stats = { "In","Pr" }},
+	{ skill="Foragirvival",		    stats = { "In","Re" }},
+	{ skill="Horticulture",		    stats = { "Re","In" }},
+	{ skill="Navigation",		    stats = { "Re","In" }},
+	{ skill="Riding",		    stats = { "Ag","SD" }},
+	{ skill="Sailing",		    stats = { "Ag","Re" }},
+	{ skill="Tracking",		    stats = { "SD","In" }},
+    },
+    Physical = {
+	{ skill="Armor",		    stats = { "St","Ag" }},
+	{ skill="Endurance",		    stats = { "Co","SD" }},
+	{ skill="Jumping",		    stats = { "St","Ag" }},
+	{ skill="Swimming",		    stats = { "St","Ag" }},
+    },
+    Subterfuge = {
+	{ skill="Ambush",		    stats = { "SD","Ag" }},
+	{ skill="Disguise",		    stats = { "Pr","SD" }},
+	{ skill="Locks & Traps",	    stats = { "In","Ag" }},
+	{ skill="Pick Pockets",		    stats = { "Ag","Qu" }},
+	{ skill="Stalking & Hiding",	    stats = { "SD","Ag" }},
+	{ skill="Poisoning",		    stats = { "In","SD" }},
+	{ skill="Sniping",		    stats = { "SD","Ag" }},
+	{ skill="Streetwise",		    stats = { "Pr","In" }},
+	{ skill="Trickery",		    stats = { "Pr","SD" }},
+    },
+}
+
+function harpstatfilter(value)
+    return 5
+end
+
+
+
+function harp(ch)
+    if not ch then return false end
+    -- Actually should check for any system template
+    if false and ch:note_get("Nebula.system.template") then
+	return false
+    end
+
+    -- Add system template
+ --   ch:note_add("Nebula.system.template","HARP")
+
+    -- Stats 
+    for i,sinfo in ipairs(stats) do
+	print("Adding",sinfo.stat.name)
+	local at = ch:attr_add(sinfo.stat)
+
+	print("  bonus is ",sinfo.bonus)    
+	local at = ch:attr_add(sinfo.bonus)
+	at:ref_add{ref=sinfo.stat.name,filter=harpstatfilter}
+    end
+
+    -- Skills
+    for gname,group in pairs(skills) do
+	print(gname)
+	for k,skill in ipairs(group) do
+	    print("",skill.skill)
+	    local at = ch:attr_add(skill.skill)
+	    for l,ref in ipairs(skill.stats) do
+		local el = at:ref_add(ref)
+		if not el then
+		    print("failed to add ",skill.skills,"->",ref)
+		end
+	    end
+	end
+    end
+
+    return true
+end
+
+
+ch = nebula.character_add("Harp test")
+harp(ch)
+ch:save()
+
+-- vim: set sw=4 sts=4 syn=lua : --
