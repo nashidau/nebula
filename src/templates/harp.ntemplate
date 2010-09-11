@@ -76,7 +76,7 @@ skills = {
     Outdoor = {
 	{ skill="Animal Handling",	    stats = { "Pr","In" }},
 	{ skill="Beastmastery",		    stats = { "In","Pr" }},
-	{ skill="Foragirvival",		    stats = { "In","Re" }},
+	{ skill="Foraging/Survival",	    stats = { "In","Re" }},
 	{ skill="Horticulture",		    stats = { "Re","In" }},
 	{ skill="Navigation",		    stats = { "Re","In" }},
 	{ skill="Riding",		    stats = { "Ag","SD" }},
