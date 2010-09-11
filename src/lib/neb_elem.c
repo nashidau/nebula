@@ -152,8 +152,8 @@ el_ref_value_get(struct neb_elem *el){
 
 		lua_getglobal(neb->L,ref->filter);
 		if (lua_isfunction(neb->L,-1)){
+			/* FIXME: Make this a little more robust */
 			lua_pushnumber(neb->L, val);
-luaneb_stackdump(neb->L);
 			lua_pcall(neb->L,1,1,0);
 			printf("Filter %s: %d -> ",ref->filter, val);
 			val = lua_tonumber(neb->L,-1);
