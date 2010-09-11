@@ -11,7 +11,7 @@ function nebload(data)
 
     if data.attrs then
 	for i,ad in ipairs(data.attrs) do
-	    local at = ch:attr_add(ad.name)
+	    local at = ch:attr_add(ad)
 	    for k,ed in ipairs(ad.elems) do
 		if ed.type == "ref" then
 		    local r = {}
