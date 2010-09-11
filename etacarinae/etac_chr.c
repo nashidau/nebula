@@ -16,6 +16,7 @@ struct etac_attr_group {
 
 struct etac_attr {
 	int magic;
+	struct etac *etac;
 	struct neb_attr *attr;
 
 	Evas_Object *value;
@@ -93,10 +94,11 @@ attr_label_get(const void *eacv, Evas_Object *obj, const char *part){
 static Evas_Object *
 attr_icon_get(const void *eacv, Evas_Object *obj, const char *part){
 	struct etac_attr *eac = (void *)eacv;
-	struct neb_attr *subat;
+	struct neb_attr *subat = NULL;
 	int val,val2;
 	char buf[100];
 	const char *sub;
+	const char *fmt = NULL;
 	Evas_Object *o;
 
 	ETAC_MAGIC_CHECK(eac, NULL);
@@ -104,20 +106,25 @@ attr_icon_get(const void *eacv, Evas_Object *obj, const char *part){
 	if (strcmp("elm.swallow.end",part) != 0)
 		return NULL;
 
-	sub = neb_attr_prop_get(eac,"Subvalue");
+	sub = neb_attr_prop_get(eac->attr,"Subvalue");
 	if (sub){
-		subat = neb_character_attr_get(eac->etac->ch, sub);
+		subat = neb_character_attr_get(eac->etac->chr, sub);
 		if (!subat){
 			printf("Unable to find sub attribute\n");
 			return NULL;
 		}
+		fmt = neb_attr_prop_get(eac->attr, "Format");
 	}
+
 
 	o = elm_label_add(obj);
 	val = neb_attr_value_get(eac->attr);
 	if (sub) {
 		val2 = neb_attr_value_get(subat);
-		snprintf(buf,100,"%d (%+d)",val,val2);
+		if (fmt)
+			snprintf(buf,100,fmt,val,val2);
+		else
+			snprintf(buf,100,"%d (%+d)",val,val2);
 	} else
 		snprintf(buf,100,"%d",val);
 	elm_label_label_set(o, buf);
@@ -197,6 +204,7 @@ etac_attr_append(const void *container, void *attrv, void *etacv){
 	printf("Add attr %s\n",name);
 
 	eac = malloc(sizeof(struct etac_attr));
+	eac->etac = etac;
 	eac->magic = ETAC_ATTR_MAGIC;
 	eac->attr = attr;
 	elm_genlist_item_append(etac->gl, &attr_class, eac, grp->item,
