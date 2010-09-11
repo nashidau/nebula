@@ -35,4 +35,16 @@ function nebload(data)
 end
 
 
+
+function harpstatfilter(value)
+    return (value - 50) / 5
+end
+
+function harpkillranks(ranks)
+    return ranks * 5
+end
+
+
+
+
 -- vim: set sw=4 sts=4 :
