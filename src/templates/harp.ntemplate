@@ -126,6 +126,10 @@ function harp(ch)
     for i,sinfo in ipairs(stats) do
 	at:ref_add{ref=sinfo.stat.name, filter="harpdpfilter", check=false}
     end
+    local at = ch:attr_add("Initiative Bonus")
+    at:prop_add("Group", "System")
+    at:ref_add{ref="Ag", check=false}
+    at:ref_add{ref="In", check=false}
 
     -- Stats 
     for i,sinfo in ipairs(stats) do
@@ -165,6 +169,15 @@ function harp(ch)
 	    end
 	end
     end
+
+    -- Boring stuff: Points spent on stats:
+    at = ch:attr_add("Stats Point")
+    at:prop_add("Group", "Misc")
+    for i,sinfo in ipairs(stats) do
+	at:ref_add{ref=sinfo.stat.name, filter="harpstatpointfilter"}
+    end
+
+
 
     return true
 end
