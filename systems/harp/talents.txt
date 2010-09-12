@@ -1,0 +1,85 @@
+Easy talents:
+	- Acceleratied healing (half time for normal healing)
+	- Additional Profesion
+	- Ambidexterity
+	- Arcane Power
+	- Artistic: +10 all artistic
+	- Athletic: +10 all athletics
+	- Bane
+	- Blazing speed: +5' move
+	- Dark Vision (greater)
+	- Dark Vission (lesser)
+	- Dense Musculature:
+		- racial weight * 5
+		- +5 oB
+		- +5 DB
+		- -25 swimming
+	- Eleoquence
+		+24 SCSM
+	- Enchanced Scent
+	- Enhanced Sense
+		+10 perception
+	- Enchantment Cure
+	- Extremely Nimble
+		+10 Stalk Hide
+		+10 acrobatic/tumbling
+	- Famlitliar
+	- Giantism
+		+50% height
+		100% weight
+		+5 bonus to strength
+	- Instinctive Defense
+		+20 db (if aware)
+		+10 db not aware
+	- Ligthing Reflexes
+		+5 initialitve
+	- Neual order (no order in 5' feet_
+	- Night vision
+	- Outdoorsman
+		+15 all outdoor
+		+15 herbcraft
+	- Physick
+		+10 healing skills
+		+10 medical skills
+	- Quiet Stride
+		+25 stalking
+	- Reduced Sleep REquirement (4 hours sleep)
+	- Regeneration
+		Minor: 1 hit minute, half time others
+		Major: 2 hit minute
+		Greater: 3 hit minutes
+	- Scholar
+		+10 all lores
+	- Scope Sklls (radius)
+	- Scope Skills (targets)
+	- Sense Magic
+		new skills at -20
+	- Shaptchager
+	- Shield training (use skilled bonus for sheilds)
+	- Skill specialisation
+		+10 to a skill
+	- Spatial Skills (double range of a spell)
+	- Speak with Magical creatures
+	- Speak with normal animals
+	- Speed loader
+		(faster reload)
+	- Subtle
+		+10 all subterfuge
+	- Succor (healing)
+	- Temporal Skill (double spell duration)
+
+Starting Items:
+	- Bonus Item I +5
+	- Daily Item I
+	- Loyal Domesticated Animal
+	- Loyal usual creature
+	- Spell Adder
+	- Power Point Adder 
+	- Nobility 
+	- Law Enforcement Ability
+	- Heir
+	- Focus Item
+
+
+
+	

@@ -1,0 +1,3 @@
+local at = ch:attr_get("Initiative")
+at:value_add(5)
+-- FIXME: Someway to record it
