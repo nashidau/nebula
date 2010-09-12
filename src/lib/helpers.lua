@@ -71,6 +71,14 @@ function harpdpfilter(value)
     end
 end
 
+-- Used to cost starting stats.  No real value after start of the game
+function harpstatpointfilter(value)
+    if value < 90 then return value end
+
+    local del = value - 90
+    return 90 + del * del
+end
+
 
 
 -- vim: set sw=4 sts=4 :
