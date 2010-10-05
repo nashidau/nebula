@@ -34,7 +34,6 @@ function nebload(data)
     return ch
 end
 
-
 local harpbonustable = {
     -18, -18, -18, -18, -18, -16, -16, -16, -16, -16,
     -14, -14, -14, -14, -14, -12, -12, -12, -12, -12,
@@ -79,6 +78,13 @@ function harpstatpointfilter(value)
     return 90 + del * del
 end
 
+function dnd35skill(value)
+    return value
+end
 
+-- Convert a stat value to it's bonus
+function dnd35statfilter(value)
+    return math.floor((value - 10) / 2)
+end
 
 -- vim: set sw=4 sts=4 :
