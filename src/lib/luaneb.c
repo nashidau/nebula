@@ -17,6 +17,7 @@ static int lneb_attr_add(lua_State *);
 static int lneb_attr_get(lua_State *);
 static int lneb_attr_prop_add(lua_State *);
 static int lneb_note_add(lua_State *);
+static int lneb_note_get(lua_State *);
 static int lneb_attr_value_get(lua_State *);
 static int lneb_elem_value_add(lua_State *);
 static int lneb_elem_ref_add(lua_State *);
@@ -61,6 +62,7 @@ static const struct luaL_Reg charfns[] = {
 	{ "attr_add",		lneb_attr_add },
 	{ "attr_get",		lneb_attr_get },
 	{ "note_add",		lneb_note_add },
+	{ "note_get",		lneb_note_get },
 	{ NULL,		NULL },
 };
 
@@ -329,7 +331,7 @@ lneb_attr_get(lua_State *lua){
 
 	at = neb_character_attr_get(lnc->ch, name);
 	if (!at)
-		return luaL_error(lua, "Can't find attribute");
+		return luaL_error(lua, "Can't find attribute '%s'",name);
 
 	/* FIXME: generalise wuth attr_add */
 	lna = lua_newuserdata(lua, sizeof(struct lneb_attr));
@@ -365,7 +367,12 @@ lneb_note_add(lua_State *lua){
 	lua_pushnil(lua);
 	return 1;
 }
-
+static int
+lneb_note_get(lua_State *lua){
+	return luaL_error(lua, "note get: Not implemented");
+	lua_pushnil(lua);
+	return 1;
+}
 
 
 static int
