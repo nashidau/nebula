@@ -1,0 +1,135 @@
+
+
+stats = {
+    { name = "Strength", bonus = "str" },
+    { name = "Dexterity", bonus = "dex" },
+    { name = "Constitution", bonus = "con" },
+    { name = "Intelligence", bonus = "int" },
+    { name = "Wisdom", bonus = "wis" },
+    { name = "Charisma", bonus = "cha" },
+}
+
+skills = {
+    { name="Appraise", untrained=true, ability="int" },
+    { name="Balance", untrained=true, ability="dex", armorcheck=true },
+    { name="Bluff", untrained=true, ability="cha" },
+    { name="Climb", untrained=true, ability="str", armorcheck=true },
+    { name="Concentration", untrained=true, ability="con" },
+    { name="Craft A ( _______________)", untrained=true, ability="int" },
+    { name="Craft B ( _______________)", untrained=true, ability="int" },
+    { name="Craft C ( _______________)", untrained=true, ability="int" },
+    { name="Decipher Script", ability="int" },
+    { name="Diplomacy", untrained=true, ability="cha" },
+    { name="Disable Device", ability="int" },
+    { name="Disguise", untrained=true, ability="cha" },
+    { name="Escape Artist", untrained=true, ability="dex", armorcheck=true },
+    { name="Forgery", untrained=true, ability="int" },
+    { name="Gather Information", untrained=true, ability="cha" },
+    { name="Handle Animal", ability="cha" },
+    { name="Heal", untrained=true, ability="wis" },
+    { name="Hide", untrained=true, ability="dex", armorcheck=true },
+    { name="Intimidate", untrained=true, ability="cha" },
+    { name="Jump", untrained=true, ability="str", armorcheck=true },
+    { name="Knowledge (A___________)", ability="int" },
+    { name="Knowledge (B___________)", ability="int" },
+    { name="Knowledge (C___________)", ability="int" },
+    { name="Knowledge (D___________)", ability="int" },
+    { name="Knowledge (E___________)", ability="int" },
+    { name="Listen", untrained=true, ability="wis" },
+    { name="Move Silently", untrained=true, ability="dex", armorcheck=true },
+    { name="Open Lock", ability="dex" },
+    { name="Perform (A_____________)", ability="cha" },
+    { name="Perform (B_____________)", ability="cha" },
+    { name="Perform (C_____________)", ability="cha" },
+    { name="Profession (A___________)", ability="wis" },
+    { name="Profession (B___________)", ability="wis" },
+    { name="Ride", untrained=true, ability="dex" },
+    { name="Search", untrained=true, ability="int" },
+    { name="Sense Motive", untrained=true, ability="wis" },
+    { name="Sleight of Hand", ability="dex", armorcheck=true },
+    { name="Spellcraft", ability="int" },
+    { name="Spot", untrained=true, ability="wis" },
+    { name="Survival", untrained=true, ability="wis" },
+    { name="Swim", untrained=true, ability="str", armorcheck=true },
+    { name="Tumble", ability="dex", armorcheck=true },
+    { name="Use Magic Device", ability="cha" },
+    { name="Use Rope", untrained=true, ability="dex" },
+};
+
+saves = {
+    Fortitude = "con",
+    Reflex = "dex",
+    Will="wis",
+}
+
+function dnd35(ch)
+    if not ch then return false end
+    --[[
+    if ch:note_get("Nebula.system.template") then
+	return false
+    end
+    ch:note_add("Nebula.system.template", "DND3.5")
+--]]
+    -- Add stats
+    for i,sinfo in ipairs(stats) do
+	print("adding:",sinfo.name)
+	local at = ch:attr_add(sinfo.name)
+	at:prop_add("Group","Stats")
+	at:prop_add("Subvalue", sinfo.bonus)
+	at:prop_add("Format", "%d (%d bonus)")
+	local at = ch:attr_add(sinfo.bonus)
+	at:ref_add{ref=sinfo.name, filter="dnd35statfilter"}
+    end
+
+    local at = ch:attr_add("Armor Check")
+
+    -- Add Skills
+    for i, skill in ipairs(skills) do
+	print("Adding:",skill.name)
+	local at = ch:attr_add(skill.name);
+	local rname = skill.name .. " ranks";
+	at:prop_add("Group", "Skills")
+	at:prop_add("Subvalue", rname)
+	at:prop_add("Format", "%+d (%d ranks)")
+
+	local ranks = ch:attr_add(rname)
+
+	-- Add either trained or untrained filter
+	at:ref_add{ref=rname, filter="dnd35skill"}
+	at:ref_add{ref=skill.ability}
+	if skill.armorcheck then
+	    at:ref_add{ref="Armor Check"}
+	end
+    end
+
+    -- Saves
+    for save, ability in pairs(saves) do
+	local at = ch:attr_add(save)
+	at:prop_add("Group", "Saves")
+	at:ref_add{ref=ability}
+    end
+
+end
+
+
+
+ch = nebula.character_add("DND 35 Test")
+dnd35(ch)
+
+g = { Strength=21, Dexterity=11,Constitution=20,Intelligence=10,Wisdom=14,
+	Charisma=11}
+for k,v in pairs(g) do
+    local at = ch:attr_get(k)
+    at:value_add(v)
+end
+gr = { Bluff=4, Climb=1, Intimidate=2,["Perform (A_____________)"]=5,
+    ["Sense Motive"] = 4, Spot=1 }
+for k,v in pairs(gr) do
+    local at = ch:attr_get(k .. " ranks")
+    at:value_add(v)
+end
+
+ch:save("/tmp/dnd35.nch")
+
+
+-- vim: set sw=4 sts=4 syn=lua : --

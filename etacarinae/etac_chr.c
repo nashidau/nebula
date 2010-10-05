@@ -40,15 +40,15 @@ enum {
 
 
 
-static char *attr_label_get(const void *, Evas_Object *, const char *part);
-static Evas_Object *attr_icon_get(const void *, Evas_Object *, const char *part);
-static Eina_Bool attr_state_get(const void *, Evas_Object *, const char *part);
-static void attr_del(const void *, Evas_Object *);
+static char *attr_label_get(void *, Evas_Object *, const char *part);
+static Evas_Object *attr_icon_get(void *, Evas_Object *, const char *part);
+static Eina_Bool attr_state_get(void *, Evas_Object *, const char *part);
+static void attr_del(void *, Evas_Object *);
 
-static char *group_label_get(const void *, Evas_Object *, const char *part);
-static Evas_Object *group_icon_get(const void *, Evas_Object *, const char *part);
-static Eina_Bool group_state_get(const void *, Evas_Object *, const char *part);
-static void group_del(const void *, Evas_Object *);
+static char *group_label_get(void *, Evas_Object *, const char *part);
+static Evas_Object *group_icon_get(void *, Evas_Object *, const char *part);
+static Eina_Bool group_state_get(void *, Evas_Object *, const char *part);
+static void group_del(void *, Evas_Object *);
 
 
 
@@ -79,8 +79,8 @@ Eina_List *groups;
  * Attr callbacks for the genlist
  */
 static char *
-attr_label_get(const void *eacv, Evas_Object *obj, const char *part){
-	struct etac_attr *eac = (void *)eacv;
+attr_label_get(void *eacv, Evas_Object *obj, const char *part){
+	struct etac_attr *eac = eacv;
 
 	ETAC_MAGIC_CHECK(eac, NULL);
 
@@ -92,8 +92,8 @@ attr_label_get(const void *eacv, Evas_Object *obj, const char *part){
 	return NULL;
 }
 static Evas_Object *
-attr_icon_get(const void *eacv, Evas_Object *obj, const char *part){
-	struct etac_attr *eac = (void *)eacv;
+attr_icon_get(void *eacv, Evas_Object *obj, const char *part){
+	struct etac_attr *eac = eacv;
 	struct neb_attr *subat = NULL;
 	int val,val2;
 	char buf[100];
@@ -132,8 +132,8 @@ attr_icon_get(const void *eacv, Evas_Object *obj, const char *part){
 	return o;
 }
 static Eina_Bool
-attr_state_get(const void *eacv, Evas_Object *obj, const char *part){
-	struct etac_attr *eac = (void *)eacv;
+attr_state_get(void *eacv, Evas_Object *obj, const char *part){
+	struct etac_attr *eac = eacv;
 
 	ETAC_MAGIC_CHECK(eac, false);
 //	printf("Part is %s\n",part);
@@ -143,8 +143,8 @@ attr_state_get(const void *eacv, Evas_Object *obj, const char *part){
 }
 
 static void
-attr_del(const void *eacv, Evas_Object *obj){
-	struct etac_attr *eac = (void *)eacv;
+attr_del(void *eacv, Evas_Object *obj){
+	struct etac_attr *eac = eacv;
 
 	ETAC_MAGIC_CHECK(eac, (void)0);
 	return;
@@ -154,22 +154,22 @@ attr_del(const void *eacv, Evas_Object *obj){
  * Group callbacks
  */
 static char *
-group_label_get(const void *grpv, Evas_Object *o, const char *part){
+group_label_get(void *grpv, Evas_Object *o, const char *part){
 	const struct etac_attr_group *grp = grpv;
 
 	return strdup(grp->group);
 }
 static Evas_Object *
-group_icon_get(const void *grpv, Evas_Object *o, const char *part){
+group_icon_get(void *grpv, Evas_Object *o, const char *part){
 	return NULL;
 }
 static Eina_Bool
-group_state_get(const void *grpv, Evas_Object *o, const char *part){
+group_state_get(void *grpv, Evas_Object *o, const char *part){
 	return true;
 }
 static void
-group_del(const void *grpv, Evas_Object *o){
-	printf("Not implemented\n");
+group_del(void *grpv, Evas_Object *o){
+	printf("%s: Not implemented\n",__FUNCTION__);
 }
 
 
