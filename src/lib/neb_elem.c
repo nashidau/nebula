@@ -206,7 +206,7 @@ el_ref_save(struct neb_elem *el, FILE *fp){
  *
  * @param el Reference element to free.
  * @param filter Filter to set.
- * @param 0 on success, -1 on error.
+ * @return 0 on success, -1 on error.
  */
 int
 neb_elem_ref_filter_set(struct neb_elem *el, const char *filter){
