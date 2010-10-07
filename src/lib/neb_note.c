@@ -187,3 +187,38 @@ neb_charcter_note_tagged_get(struct neb_character *ch, const char *tag){
 
 	return nl;
 }
+
+
+/**
+ * Append text to an existing note.
+ *
+ * If an error occurs with memory allocation, the existing text is preserved.
+ *
+ * @param note Note to add text too
+ * @param text Text to add.
+ * @return 0 on success, -1 on error.
+ */
+int
+neb_note_text_append(struct neb_note *note, const char *text){
+	char *nbuf;
+	int len,len2;
+	if (!note) return -1;
+	if (!text) return 0;
+
+	if (!note->note){
+		note->note = strdup(text);
+		return !note->note;
+	}
+
+	len = strlen(note->note);
+	len2 = strlen(text);
+
+	nbuf = realloc(note->note, len + len2 + 1);
+	if (!nbuf)
+		return -1;
+
+	note->note = nbuf;
+	memcpy(note->note + len, text, len2);
+
+	return 0;
+}
