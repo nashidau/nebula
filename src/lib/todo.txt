@@ -1,0 +1,15 @@
+Doc:
+	- lua api
+	- properties
+	- save and load
+
+Harp:
+	- Some races
+	- Some classes
+
+DND3.5
+	- Feats
+
+Testing:
+	- Move to 'check'
+	- Test notes
