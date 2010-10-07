@@ -1,3 +1,22 @@
+/**
+ * Note interface for characters.
+ *
+ * Notes provide a number of features.  The first is for character notes such
+ * as background, journal entries, player notes, or even messages from the GM.  
+ *
+ * Secondly they provide a mechanism for storing other character data not
+ * directly represented as part of a characters attributes.  These are things
+ * like a dnd's feats or a talent from Harp or rolemaster.
+ *
+ * Notes consist of a title, and some body text.  Optionally they may consist
+ * of a list of tags.
+ *
+ * Tags allow notes to be easily grouped or retreived in a particular
+ * category.  For instance all Journal entries should be tagged with journal,
+ * while feats would be tagged with feat.
+ *
+ */
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,8 +27,7 @@
 #include "nebula_private.h"
 
 
-/* FIXME: Use string shares for at least the tags */
-
+/** @todo: Use string shares for at least the tags */
 
 struct neb_note {
 	char *name;
@@ -65,6 +83,17 @@ neb_character_note_add(struct neb_character *nc, const char *title,
 	return note;
 }
 
+/**
+ * Get a note by it's title.
+ *
+ * This retrieves the note with the given title.  Titles are (meant) to be
+ * unique.  If a character has multiple notes with the same title, any may be
+ * retrieved by this function.
+ *
+ * @param ch Character to get note from.
+ * @param title Title of note to find.
+ * @return Note or NULL on error.
+ */
 struct neb_note *
 neb_character_note_find(struct neb_character *ch, const char *title){
 	Eina_List *l;
@@ -81,6 +110,14 @@ neb_character_note_find(struct neb_character *ch, const char *title){
 	return NULL;
 }
 
+/**
+ * Add a tag to a note.
+ *
+ * @todo Handle duplicates gracefully.
+ * @param note Note to add tag too.
+ * @param tag Tag to add.
+ * @return 0 on success, non-zero on error.
+ */
 int
 neb_note_tag_add(struct neb_note *note, const char *tag){
 	if (!note) return -1;
@@ -92,6 +129,15 @@ neb_note_tag_add(struct neb_note *note, const char *tag){
 	return !!note->tags;
 }
 
+/**
+ * Remove a tag from a note.
+ *
+ * If the note does not have the tag, an error is returned.
+ *
+ * @param note Note to remove tag from.
+ * @param tag Tag to remove.
+ * @return 0 on success, non-zero on error.
+ */
 int
 neb_note_tag_remove(struct neb_note *note, const char *tag){
 	Eina_List *l;
@@ -110,6 +156,16 @@ neb_note_tag_remove(struct neb_note *note, const char *tag){
 	return -1;
 }
 
+/**
+ * Returns a list of notes with a particular tag.
+ *
+ * The returned list must be freed, but the notes themselves should not.
+ * The returned list is invalidated if any note is deleted.
+ *
+ * @param ch Nebular character
+ * @param tag Tag to search for
+ * @return list of notes to be freed, or NULL on error.
+ */
 Eina_List *
 neb_charcter_note_tagged_get(struct neb_character *ch, const char *tag){
 	Eina_List *ntmp, *tl, *nl;
