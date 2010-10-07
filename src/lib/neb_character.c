@@ -19,26 +19,6 @@ enum {
 	CHARACTER_MAGIC = 0x543423fe
 };
 
-struct neb_character {
-	int magic;
-
-	char *name;
-
-	struct nebula *neb;
-
-	Eina_List *attrs;
-	Eina_List *notes;
-};
-
-struct neb_note {
-	int magic;
-
-	char *key;
-
-	const char *markup;
-};
-
-
 static Eina_Bool attr_save(const void *list, void *attrv, void *fpv);
 
 /**
@@ -308,6 +288,7 @@ neb_attr_name_get(struct neb_attr *attr){
 	return attr->name;
 }
 
+
 /* Internal call */
 int
 neb_attribute_element_append(struct neb_attr *attr, struct neb_elem *el){
@@ -318,30 +299,6 @@ neb_attribute_element_append(struct neb_attr *attr, struct neb_elem *el){
 }
 
 
-
-
-/**
- * Add a note to the given character.
- *
- */
-struct neb_note *
-neb_character_note_add(struct neb_character *nc, const char *key){
-	struct neb_note *note;
-
-	if (!nc || !key) return NULL;
-
-	note = calloc(1,sizeof(struct neb_note));
-	if (!note) return NULL;
-
-	note->key = strdup(key);
-	if (!note->key){
-		free(note);
-		return NULL;
-	}
-
-	nc->notes = eina_list_append(nc->notes, note);
-	return note;
-}
 
 
 /**

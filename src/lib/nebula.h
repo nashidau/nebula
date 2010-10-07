@@ -32,7 +32,8 @@ struct neb_attr *neb_character_attr_get(struct neb_character *,
 		const char *name);
 
 struct neb_note *neb_character_note_add(struct neb_character *,
-		const char *key);
+		const char *key, const char *body);
+int neb_note_text_append(struct neb_note *, const char *);
 
 
 struct neb_elem *neb_attr_elem_add(struct neb_attr *,

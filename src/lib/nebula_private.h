@@ -10,6 +10,19 @@ struct nebula {
 	lua_State *L;
 };
 
+struct neb_character {
+	int magic;
+
+	char *name;
+
+	struct nebula *neb;
+
+	Eina_List *attrs;
+	Eina_List *notes;
+};
+
+
+
 struct elem_type {
 	size_t size;
 	int (*value_get)(struct neb_elem *el);

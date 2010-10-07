@@ -10,6 +10,7 @@ SOURCES=			\
 	nebula.c		\
 	neb_character.c		\
 	neb_elem.c		\
+	neb_note.c		\
 	luaneb.c
 
 HEADERS=			\
