@@ -5,35 +5,180 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-	<title>nashidau/nebula @ GitHub</title>
-	
-	<style type="text/css">
-		body {
-  		margin-top: 1.0em;
-  		background-color: #6a4c94;
-		  font-family: "Helvetica,Arial,FreeSans";
-  		color: #ffffff;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-		h1 { font-size: 3.8em; color: #95b36b; margin-bottom: 3px; }
-		h1 .small { font-size: 0.4em; }
-		h1 a { text-decoration: none }
-		h2 { font-size: 1.5em; color: #95b36b; }
-    h3 { text-align: center; color: #95b36b; }
-    a { color: #95b36b; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-		pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-	</style>
-	
+	<title>Nebula</title>
+
+	<link href="nebula.css" rel="stylesheet" type="text/css">
+
 </head>
 
 <body>
+
+    <h1>Nebula: Character Management Software</h1>
+
+	<p>Nebula is library for maintaining characters for RPGs.  It is
+	designed to be fairly system independent, although like all software
+	only time will tell how successful it will be at that.</p>
+
+	<p>It is heavily weighted towards the mechanics side of the design,
+	especially number heavy ones.  The first systems targetted are
+	<!-- FIXME: links to home pages --> 
+	<ul>
+	    <li>Rolemaster (RMSS/FRP at first)</li>	
+	    <li>Harp</li>
+	    <li>DND 3.5</li>
+	</ul>
+	</p>
+
+	<p>Once these systems are complete (or at least usable) additional
+	focus will be on:
+	<ul>
+	    <li>Dogs in the Vineyard</li>
+	    <li>My life with master</li>
+	    <li>World of Darkness games (Mage, Vampire, Werewolf et al)</li>
+	</ul>
+	</p>
+
+	<p>Other requested systems:
+	<ul>
+	    <li>Call of Cthulhu</li>
+	    <li>Houses of the Blooded</li>
+	    <li>Other Rolemaster flavours</li>
+	</ul>
+
+    <h2>Contributing</h2>
+
+	<p>Patches, contributions, support, suggestions etc are all
+	appreciated for nebula.</p>
+
+	<p>Nebula is under the GPL.</p>
+
+	<p>Code and similar contributions are best done using github, feel
+	free to fork yourself a copy
+	    (see
+	     <a href="http://github.com/nashidau/nebula">the main page</a>).
+	Send me a pull request if you have changes.</p>
+
+    <h2>Downloading</h2>
+	
+	<p>Either clone the project at  GitHub:
+	<a href="http://github.com/nashidau/nebula">nashidau/nebula</a></p>
+
+	<p>Or get a snapshot in <a href="http://github.com/nashidau/nebula/zipball/master">zip</a> or
+      <a href="http://github.com/nashidau/nebula/tarball/master">tar</a> formats.
+
+    <h2>Components</h2>
+
+	<p>There are currently 4 main components to Nebula.</p>
+
+	<h3>LibNebula</h3>
+	    
+	    <p>The main library for nebula.  It stores and manages the data at
+	    runtime for the characters.</p>
+
+	<h3>Eta Carinae</h3>
+
+	    <p>A EFL based viewer for nebula characters.</p>
+
+	<h3>Templates</h3>
+
+	    <p>System templates and data</p>
+
+	<h3>Protocol and standards</h3>
+
+	    <p>Protocol and standards covers the general rules which allow an
+	    arbitrary application to render an arbitrary character in an
+	    arbitrary system in a useful manner.</p>
+
+    <h2>Status</h2>
+
+	<p>Current status is:</p>
+
+	<h3>LibNebula</h3>
+
+	    <p>Mostly complete.  The core of the library is complete.  Work
+	    needs to be done on supporting more advanced features such as
+	    character auditing and rich display.  (So you can see exactly
+		    where that +27 strength bonus comes from).
+	    </p>
+
+	    <p>The code is fairly well documented.</p>
+
+	<h3>Eta Carinae</h3>
+    
+	    <p>Only basic viewer, no editing at all.  Minimal
+	    documentation.</h3>
+
+	<h3>Templates</h3>
+
+	    <p>Proof of concept templates for Harp and DnD3.5.</p>
+
+	<h3>Protocol</h3>
+
+	    <p>Basic protocol done in Eta Carinae, and templates.  Not
+	    documented</p>
+
+    <h2>Future work</h2>
+
+	<p>Obviously any help in any area here, or any others appreciated.</p>
+
+	<h3>Libnebula</h3>
+
+	    <ul>
+		<li>Inspection API</li>
+		<li>Add type filters (implement Dnd stacking rules)</li>
+		<li>Loading of system support libraries dynamically</li>
+		<li>Apply template API</li>
+		<li>Document Lua API</li>
+		<li>Add more test suite.</li>
+	    </ul>
+	
+	<h3>Eta Carinae</h3>
+
+	    <ul>
+		<li>Notes support</li>
+		<li>Edit things</li>
+		<li>Create characters</li>
+		<li>Load/save at run time</li>
+		<li>Document</li>
+	    </ul>
+
+	<h3>Templates</h3>
+
+	    <ul>
+		<li>Harp generic items (height, weight etc)</li>
+		<li>Harp attacks<li>
+		<li>Harp inventory</li>
+		<li>Harp talents</li>
+		<li>Levels/classes</li>
+		<li>Dnd	weapons/attacks etc</li>
+		<li>Dnd feats</li>
+		<li>Dnd bonus stacking</li>
+		<li>Dnd levels/classes</li>
+		<li>start rolemaster</li>
+		<li>Namespace helper functions</li>
+		<li>Remove hard coded examples</li>
+	    </ul>
+
+	<h3>Protocol</h3>
+
+	    <ul>
+		<li>Design a protocol for character creation.</li>
+		<li>Document existing display protocol</li>
+		<li>Journal Protocol</li>
+		<li>Notes protocol</li>
+		<li>Feats/talents protocol</li>
+		<li>Character format protocol</li>
+		<li>Printing protocol</li>
+	    </ul>
+
+
+
+
+
+
+
+
+<!--
   <a href="http://github.com/nashidau/nebula"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
 
   <div id="container">
@@ -44,37 +189,11 @@
       <a href="http://github.com/nashidau/nebula/tarball/master">
         <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
     </div>
-
-    <h1><a href="http://github.com/nashidau/nebula">nebula</a>
-      <span class="small">by <a href="http://github.com/nashidau">nashidau</a></span></h1>
-
-    <div class="description">
-      Character Tracking for various RPGs.
-    </div>
-
-    <h2>License</h2>
-<p>GPL</p>
-<h2>Contact</h2>
-<p>Brett Nash (nash@nash.id.au)<br/>      </p>
+-->
 
 
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/nashidau/nebula/zipball/master">zip</a> or
-      <a href="http://github.com/nashidau/nebula/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/nashidau/nebula</pre>
-    </p>
 
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/nashidau/nebula">nashidau/nebula</a>
-    </div>
-
-  </div>
-
-  
 </body>
 </html>
+
+<!-- vim: set sw=4 sts=4 : -->
