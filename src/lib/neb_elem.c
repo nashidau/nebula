@@ -4,7 +4,7 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-
+#include <string.h>
 
 #include "nebula.h"
 #include "nebula_private.h"
