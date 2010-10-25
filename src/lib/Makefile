@@ -43,8 +43,10 @@ check: install ${CHECK}
 install: ${LIBTARGET}
 	sudo cp ${LIBTARGET} /usr/local/lib
 	sudo cp ${HEADERS} /usr/local/include/
+	sudo mkdir -p /usr/local/lib/pkgconfig/
 	sudo cp nebula.pc /usr/local/lib/pkgconfig/
 	sudo ln -sf /usr/local/lib/libnebula.so.0 /usr/local/lib/libnebula.so
+	sudo mkdir -p /usr/local/lib/lua/5.1/
 	sudo ln -sf /usr/local/lib/libnebula.so.0 /usr/local/lib/lua/5.1/nebula.so
 	sudo ldconfig
 
