@@ -3,6 +3,8 @@ PKGS=eina-0 lua5.1
 CFLAGS+=`pkg-config --cflags ${PKGS}` 
 LDFLAGS+=`pkg-config --libs ${PKGS}` -rdynamic -ldl
 
+CHECKFLAGS=`pkg-config --cflags --libs check nebula`
+
 
 LIBTARGET=libnebula.so.0
 
@@ -16,6 +18,12 @@ SOURCES=			\
 HEADERS=			\
 	nebula.h
 
+CHECK=				\
+	check/check.o		\
+	check/check_attr.o	\
+	check/check_character.o \
+	check/check_note.o
+
 ${LIBTARGET}: ${SOURCES} helpers.o
 	${CC} -fPIC -Os -Wall -shared -Wl,-soname,${LIBTARGET} -o ${LIBTARGET} \
 		${CFLAGS} ${LDFLAGS}	\
@@ -27,6 +35,10 @@ nebula.c: nebula.h
 helpers.o: helpers.lua
 	ld -r -b binary -o helpers.o helpers.lua
 
+# Check statically links in library for now
+check: install ${CHECK} 
+	${CC} ${CFLAGS} -o check/check ${CHECK} ${CHECKFLAGS} ${LDFLAGS}
+	./check/check
 
 install: ${LIBTARGET}
 	cp ${LIBTARGET} /usr/local/lib
