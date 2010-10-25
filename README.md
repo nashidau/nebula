@@ -16,6 +16,7 @@ Target Systems
  - Call of Cthulhu
  - Houses of the Blooded
  - World of Darkness
+ - Dungeons and Dragons 3rd (& 3.5)
 
 Architecture
 ------------
