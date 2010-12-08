@@ -43,7 +43,7 @@ neb_character_new(struct nebula *neb){
 
 	nc->magic = CHARACTER_MAGIC;
 
-	rv = nebula_charater_add(neb,nc);
+	rv = nebula_character_add(neb,nc);
 	if (rv < 0) {
 		free(nc);
 		return NULL;
@@ -350,7 +350,7 @@ neb_attr_prop_get(struct neb_attr *attr, const char *prop){
  * @return -1 on error, 0 otherwise.
  */
 int
-nebula_charater_add(struct nebula *neb, struct neb_character *ch){
+nebula_character_add(struct nebula *neb, struct neb_character *ch){
 	if (!neb) return -1;
 	if (!ch) return -1;
 

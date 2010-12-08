@@ -1,3 +1,6 @@
+#ifndef NEBULA_H
+#define NEBULA_H 1
+
 #include <Eina.h>
 
 struct nebula;
@@ -52,3 +55,6 @@ const char *neb_attr_prop_get(struct neb_attr *attr, const char *prop);
 int neb_elem_ref_filter_set(struct neb_elem *elem, const char *filter);
 
 Eina_Iterator *neb_character_attr_iter_new(struct neb_character *);
+
+
+#endif
