@@ -1,0 +1,33 @@
+Attribute Display
+=================
+
+A long list of attributes is all fine for displaying items.  However it's not
+so useful for human display.  For starters many attributes should not be
+displayed by default.  Others may need to be formated in a particular way.
+
+The rules are:
+ - By default each attribute is _not_ displayed.
+ - If the attribute is in a group it is displayed in the group
+ - If the attribute has the same name as a group, it is displayed as the
+ group.
+
+
+Formatting Values
+-----------------
+
+The default formatting of a value is simply the numeric version of the
+attributes value (from neb_attr_value_get).  There are 2 properties 'props' of
+concern: "Format" and "Subvalue".
+
+If the "Subvalue" property exists it will refer to another attribute, whose
+value should also be got from 'neb_attr_value_get()'
+
+If there is NO subvalue:
+	If format exists: Use format as printf style string, with a single %d.
+	If no format use the format string '%d'.
+
+If there is a subvalue:
+	if format exists: use format string with value and subvalue.
+	Use format string "%d (%+d)" with value and subvalue.
+
+
