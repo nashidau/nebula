@@ -382,7 +382,7 @@ luaneb_stackdump(neb->L);
 	ch = luaneb_tocharacter(neb->L,1);
 	lua_pop(neb->L,1);
 
-	rv = nebula_charater_add(neb,ch);
+	rv = nebula_character_add(neb,ch);
 
 	return ch;
 }
