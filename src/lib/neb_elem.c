@@ -29,7 +29,7 @@ struct neb_elem_ref {
 
 	struct neb_character *ch;
 	const char *ref;
-	char *filter;
+	char *transform;
 };
 
 static const struct elem_type types[] = {
@@ -87,11 +87,11 @@ neb_attr_elem_value_add(struct neb_attr *at, int value){
  * Create a reference element.
  *
  * A reference element references the value of another attribute.  Often this
- * will include some sort of filter to convert the value, but this is not
+ * will include some sort of transform to convert the value, but this is not
  * always so.  For instance a reference can be used to add a bonus to a skill
  * based on your strength directly, or it may calculate our strength bonus
  * based on your raw strength skill (strength 17 -> +3 bonus for instance)
- * using a filter.
+ * using a transform.
  *
  * Generally the check flag should be set to true.  The only reason not to is
  * if a large group of attributes is being added at once, and ordering may
@@ -171,20 +171,20 @@ neb_elem_value_get(struct neb_elem *el){
 }
 
 /**
- * Add a filter to a reference.
+ * Add a transform to a reference.
  *
- * If a filter is already set, it will be deleted.
- * A NULL filter, clears the existing filter.
+ * If a transform is already set, it will be deleted.
+ * A NULL transform, clears the existing transform.
  *
- * @todo Note on what filters do.
- * @todo Fix check on filter get.
+ * @todo Note on what transforms do.
+ * @todo Fix check on transform get.
  *
  * @param el Reference element to free.
- * @param filter Filter to set.
+ * @param transform Filter to set.
  * @return 0 on success, -1 on error.
  */
 int
-neb_elem_ref_filter_set(struct neb_elem *el, const char *filter){
+neb_elem_ref_transform_set(struct neb_elem *el, const char *transform){
 	struct neb_elem_ref *ref;
 
 	if (!el || el->type->type != NEB_ELEM_REFERENCE) return -1;
@@ -192,32 +192,32 @@ neb_elem_ref_filter_set(struct neb_elem *el, const char *filter){
 	/* FIXME: Magic check */
 	ref = (struct neb_elem_ref *)el;
 
-	if (ref->filter){
-		free(ref->filter);
-		ref->filter = NULL;
+	if (ref->transform){
+		free(ref->transform);
+		ref->transform = NULL;
 	}
 
-	if (!filter) return 0;
+	if (!transform) return 0;
 
-	ref->filter = strdup(filter);
-	return ref->filter ? 0 : -1;
+	ref->transform = strdup(transform);
+	return ref->transform ? 0 : -1;
 }
 
 /**
- * Get the filter for a reference if set.
+ * Get the transform for a reference if set.
  *
  * @param el Element.
  * @return NULL
  */
 const char *
-neb_elem_ref_filter_get(struct neb_elem *el){
+neb_elem_ref_transform_get(struct neb_elem *el){
 	struct neb_elem_ref *elr;
 
 	if (!el || el->type->type != NEB_ELEM_REFERENCE) return NULL;
 
 	elr = (void *)el;
 
-	return elr->filter;
+	return elr->transform;
 }
 
 
@@ -242,11 +242,11 @@ el_ref_value_get(struct neb_elem *el){
 
 	val = neb_attr_value_get(at);
 
-	if (ref->filter){
+	if (ref->transform){
 		/* FIXME: Look up system */
 		neb = neb_character_neb_get(ref->ch);
 
-		lua_getglobal(neb->L,ref->filter);
+		lua_getglobal(neb->L,ref->transform);
 		if (lua_isfunction(neb->L,-1)){
 			/* FIXME: Make this a little more robust */
 			lua_pushnumber(neb->L, val);
@@ -254,7 +254,7 @@ el_ref_value_get(struct neb_elem *el){
 			val = lua_tonumber(neb->L,-1);
 			lua_pop(neb->L,1);
 		} else {
-			printf("Didn't get filter %s\n",ref->filter);
+			printf("Didn't get transform %s\n",ref->transform);
 		}
 	}
 
@@ -283,8 +283,8 @@ el_ref_save(struct neb_elem *el, FILE *fp){
 
 	/* FIXME: Esacpe */
 	fprintf(fp,"        { type = 'ref', ref = [[%s]]",ref->ref);
-	if (ref->filter)
-		fprintf(fp,", filter = [[%s]]",ref->filter);
+	if (ref->transform)
+		fprintf(fp,", transform = [[%s]]",ref->transform);
 	fprintf(fp," },\n");
 	/* Common save here */
 

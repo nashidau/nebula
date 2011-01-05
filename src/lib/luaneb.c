@@ -456,15 +456,15 @@ lneb_elem_ref_add(lua_State *L){
 	struct lneb_ref *lnr;
 	struct lneb_attr *lna;
 	const char *refto = NULL;
-	const char *filter = NULL;
+	const char *transform = NULL;
 	bool docheck = true;
 
 	lna = luaL_checkudata(L, 1, LNEB_ATTRIBUTE);
 	if (lua_istable(L,2)){
 		lua_getfield(L,2,"ref");
 		refto = lua_tostring(L,-1);
-		lua_getfield(L,2,"filter");
-		filter = lua_tostring(L,-1);
+		lua_getfield(L,2,"transform");
+		transform = lua_tostring(L,-1);
 		lua_pop(L,2);
 	} else {
 		refto = luaL_checkstring(L,2);
@@ -488,8 +488,8 @@ lneb_elem_ref_add(lua_State *L){
 		return luaL_error(L, "Failed to add reference");
 	}
 
-	if (filter)
-		neb_elem_ref_filter_set(lnr->elem, filter);
+	if (transform)
+		neb_elem_ref_transform_set(lnr->elem, transform);
 
 	return 1;
 }

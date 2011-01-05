@@ -52,7 +52,7 @@ const char *neb_attr_name_get(struct neb_attr *attr);
 int neb_attr_prop_add(struct neb_attr *, const char *prop, const char *value);
 const char *neb_attr_prop_get(struct neb_attr *attr, const char *prop);
 
-int neb_elem_ref_filter_set(struct neb_elem *elem, const char *filter);
+int neb_elem_ref_transform_set(struct neb_elem *elem, const char *transform);
 
 Eina_Iterator *neb_character_attr_iter_new(struct neb_character *);
 Eina_Iterator *neb_attr_elem_iter_new(struct neb_attr *attr);
@@ -60,6 +60,6 @@ Eina_Iterator *neb_attr_elem_iter_new(struct neb_attr *attr);
 enum neb_elem_type neb_elem_type_get(struct neb_elem *el);
 const char *neb_elem_reference_get(struct neb_elem *el);
 int neb_elem_value_get(struct neb_elem *el);
-const char *neb_elem_ref_filter_get(struct neb_elem *el);
+const char *neb_elem_ref_transform_get(struct neb_elem *el);
 
 #endif

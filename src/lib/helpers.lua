@@ -16,7 +16,7 @@ function nebload(data)
 		if ed.type == "ref" then
 		    local r = {}
 		    r.ref = ed.ref
-		    r.filter = ed.filter
+		    r.transform = ed.transform
 		    r.check = false
 		    at:ref_add(r)
 		elseif ed.type == "value" then
@@ -48,7 +48,7 @@ local harpbonustable = {
 }
 
 
-function harpstatfilter(value)
+function harpstattransform(value)
     if value > 100 then return value - 90 end
     if value < 1 then return -18 end
     return harpbonustable[value];
@@ -61,8 +61,8 @@ function harpkillranks(ranks)
     return ranks + 50
 end
 
-function harpdpfilter(value)
-    local v = harpstatfilter(value)
+function harpdptransform(value)
+    local v = harpstattransform(value)
     if v < 1 then
 	return 0
     else
@@ -71,7 +71,7 @@ function harpdpfilter(value)
 end
 
 -- Used to cost starting stats.  No real value after start of the game
-function harpstatpointfilter(value)
+function harpstatpointtransform(value)
     if value < 90 then return value end
 
     local del = value - 90
@@ -83,7 +83,7 @@ function dnd35skill(value)
 end
 
 -- Convert a stat value to it's bonus
-function dnd35statfilter(value)
+function dnd35stattransform(value)
     return math.floor((value - 10) / 2)
 end
 
