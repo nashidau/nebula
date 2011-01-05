@@ -172,7 +172,34 @@ group_del(void *grpv, Evas_Object *o){
 	printf("%s: Not implemented\n",__FUNCTION__);
 }
 
+/**
+ * Someone clicked on an attribute:
+ * 	Show details about it
+ */
+static void
+attr_select(void *data, Evas_Object *obj, void *eventinfo){
+	Eina_Iterator *iter;
+	struct etac_attr *eac;
+	struct neb_elem *elem;
+	const char *filter;
 
+	eac = data;
+
+	printf("Attr is: %s\n",neb_attr_name_get(eac->attr));
+	iter = neb_attr_elem_iter_new(eac->attr);
+	EINA_ITERATOR_FOREACH(iter, elem){
+		if (neb_elem_type_get(elem) == NEB_ELEM_REFERENCE){
+			printf("\tReference to %s\n",
+					neb_elem_reference_get(elem));
+			filter = neb_elem_ref_filter_get(elem);
+			if (filter)
+				printf("\t\tWith filter %s\n",filter);
+		} else {
+			printf("\tValue: %d\n",
+					neb_elem_value_get(elem));
+		}
+	}
+}
 
 
 static Eina_Bool
@@ -196,7 +223,7 @@ etac_attr_append(const void *container, void *attrv, void *etacv){
 	if (l == NULL){
 		grp = malloc(sizeof(struct etac_attr_group));
 		grp->item = elm_genlist_item_append(etac->gl, &group_class, grp,
-				NULL,0,NULL,0);
+				NULL,0,NULL, NULL);
 		grp->group = strdup(group);
 		groups = eina_list_append(groups, grp);
 	}
@@ -206,7 +233,7 @@ etac_attr_append(const void *container, void *attrv, void *etacv){
 	eac->magic = ETAC_ATTR_MAGIC;
 	eac->attr = attr;
 	elm_genlist_item_append(etac->gl, &attr_class, eac, grp->item,
-			0, NULL, 0);
+			0, attr_select, eac);
 
 	return true;
 }

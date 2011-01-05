@@ -24,6 +24,7 @@ struct neb_character {
 
 
 struct elem_type {
+	enum neb_elem_type type;
 	size_t size;
 	int (*value_get)(struct neb_elem *el);
 	int (*save)(struct neb_elem *el, FILE *fp);

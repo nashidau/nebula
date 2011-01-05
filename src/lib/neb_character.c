@@ -336,6 +336,14 @@ neb_attr_prop_get(struct neb_attr *attr, const char *prop){
 }
 
 
+Eina_Iterator *
+neb_attr_elem_iter_new(struct neb_attr *attr){
+	if (!attr) return NULL;
+	return eina_list_iterator_new(attr->elems);
+}
+
+
+
 /**
  * Add a character to be managed by nebula.
  *

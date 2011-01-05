@@ -34,11 +34,13 @@ struct neb_elem_ref {
 
 static const struct elem_type types[] = {
 	[NEB_ELEM_VALUE] = {
+		.type = NEB_ELEM_VALUE,
 		.size = sizeof(struct neb_elem_value),
 		.value_get = el_value_value_get,
 		.save = el_value_save,
 	},
 	[NEB_ELEM_REFERENCE] = {
+		.type = NEB_ELEM_REFERENCE,
 		.size = sizeof(struct neb_elem_ref),
 		.value_get = el_ref_value_get,
 		.save = el_ref_save,
@@ -124,6 +126,50 @@ neb_attr_elem_reference_add(struct neb_attr *at, const char *ref, bool check){
 	return &el->elem;
 }
 
+/**
+ * Get the type of an element.
+ * Useful to be able to inspect it.
+ *
+ * @param el Element to get type of.
+ * @return -1 on error, else either a REF or VALUE element.
+ */
+enum neb_elem_type
+neb_elem_type_get(struct neb_elem *el){
+	if (!el) return -1;
+	return el->type->type;
+}
+
+/**
+ * If the element is a reference, returns the name of the refernced attribute.
+ *
+ * The returned data should not be freed.
+ * @param el Element.
+ * @return NULL on error, or referenced element.
+ */
+const char *
+neb_elem_reference_get(struct neb_elem *el){
+	struct neb_elem_ref *elr;
+	if (!el || el->type->type != NEB_ELEM_REFERENCE) return NULL;
+
+	elr = (void *)el;
+	return elr->ref;
+}
+
+/**
+ * If the element is a value element, return it's value.
+ *
+ * @param el Element.
+ * @return INT_MAX on error, or the value other.
+ */
+int
+neb_elem_value_get(struct neb_elem *el){
+	struct neb_elem_value *elv;
+	if (!el || el->type->type != NEB_ELEM_VALUE) return INT_MAX;
+
+	elv = (void *)el;
+	return elv->value;
+}
+
 
 static int
 el_value_value_get(struct neb_elem *el){
@@ -202,7 +248,8 @@ el_ref_save(struct neb_elem *el, FILE *fp){
  * If a filter is already set, it will be deleted.
  * A NULL filter, clears the existing filter.
  *
- * @todo Note on what filters do
+ * @todo Note on what filters do.
+ * @todo Fix check on filter get.
  *
  * @param el Reference element to free.
  * @param filter Filter to set.
@@ -211,6 +258,8 @@ el_ref_save(struct neb_elem *el, FILE *fp){
 int
 neb_elem_ref_filter_set(struct neb_elem *el, const char *filter){
 	struct neb_elem_ref *ref;
+
+	if (!el || el->type->type != NEB_ELEM_REFERENCE) return -1;
 
 	/* FIXME: Magic check */
 	ref = (struct neb_elem_ref *)el;
@@ -224,4 +273,21 @@ neb_elem_ref_filter_set(struct neb_elem *el, const char *filter){
 
 	ref->filter = strdup(filter);
 	return ref->filter ? 0 : -1;
+}
+
+/**
+ * Get the filter for a reference if set.
+ *
+ * @param el Element.
+ * @return NULL
+ */
+const char *
+neb_elem_ref_filter_get(struct neb_elem *el){
+	struct neb_elem_ref *elr;
+
+	if (!el || el->type->type != NEB_ELEM_REFERENCE) return NULL;
+
+	elr = (void *)el;
+
+	return elr->filter;
 }

@@ -55,6 +55,11 @@ const char *neb_attr_prop_get(struct neb_attr *attr, const char *prop);
 int neb_elem_ref_filter_set(struct neb_elem *elem, const char *filter);
 
 Eina_Iterator *neb_character_attr_iter_new(struct neb_character *);
+Eina_Iterator *neb_attr_elem_iter_new(struct neb_attr *attr);
 
+enum neb_elem_type neb_elem_type_get(struct neb_elem *el);
+const char *neb_elem_reference_get(struct neb_elem *el);
+int neb_elem_value_get(struct neb_elem *el);
+const char *neb_elem_ref_filter_get(struct neb_elem *el);
 
 #endif
