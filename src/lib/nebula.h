@@ -35,9 +35,15 @@ struct neb_attr *neb_character_attr_get(struct neb_character *,
 		const char *name);
 
 struct neb_note *neb_character_note_add(struct neb_character *,
-		const char *key, const char *body);
+		const char *title, const char *body);
 int neb_note_text_append(struct neb_note *, const char *);
-
+const char *neb_note_title_get(struct neb_note *);
+const char *neb_note_body_get(struct neb_note *);
+struct neb_note *neb_character_note_find(struct neb_character *ch,
+		const char *title);
+int neb_note_tag_add(struct neb_note *note, const char *tag);
+int neb_note_tag_remove(struct neb_note *note, const char *tag);
+Eina_List *neb_charcter_note_tagged_get(struct neb_character *ch, const char *);
 
 struct neb_elem *neb_attr_elem_add(struct neb_attr *,
 		enum neb_elem_type);
@@ -56,6 +62,7 @@ int neb_elem_ref_transform_set(struct neb_elem *elem, const char *transform);
 
 Eina_Iterator *neb_character_attr_iter_new(struct neb_character *);
 Eina_Iterator *neb_attr_elem_iter_new(struct neb_attr *attr);
+Eina_Iterator *neb_character_note_iter_new(struct neb_attr *attr);
 
 enum neb_elem_type neb_elem_type_get(struct neb_elem *el);
 const char *neb_elem_reference_get(struct neb_elem *el);
