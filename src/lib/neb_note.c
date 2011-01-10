@@ -223,3 +223,22 @@ neb_note_text_append(struct neb_note *note, const char *text){
 
 	return 0;
 }
+
+Eina_Iterator *
+neb_character_note_iter_new(struct neb_character *nch){
+	if (!nch) return NULL;
+	return eina_list_iterator_new(nch->notes);
+}
+
+
+const char *
+neb_note_title_get(struct neb_note *note){
+	if (!note) return NULL;
+	return note->name;
+}
+
+const char *
+neb_note_body_get(struct neb_note *note){
+	if (!note) return NULL;
+	return note->note;
+}
