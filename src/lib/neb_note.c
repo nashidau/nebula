@@ -224,19 +224,44 @@ neb_note_text_append(struct neb_note *note, const char *text){
 	return 0;
 }
 
+/**
+ * Create a new iterator to iterate over all notes.
+ *
+ * The iterator should be freed when done.
+ *
+ * @param nch Nebula character to generate iterator for
+ * @retuen New note iterator.
+ */
 Eina_Iterator *
 neb_character_note_iter_new(struct neb_character *nch){
 	if (!nch) return NULL;
 	return eina_list_iterator_new(nch->notes);
 }
 
-
+/**
+ * Gets the title of a note.
+ *
+ * The return value should not be modified by the caller.  It is only
+ * guaranteed to be valid until the next note API call.
+ *
+ * @param note Note to get title of.
+ * @return Note name or NULL on error.
+ */
 const char *
 neb_note_title_get(struct neb_note *note){
 	if (!note) return NULL;
 	return note->name;
 }
 
+/**
+ * Gets the body of a note.
+ *
+ * The return value should not be modified by the caller.  It is only
+ * guaranteed to be valid until the next note API call.
+ *
+ * @param note Note to get body of.
+ * @return Note name or NULL on error.
+ */
 const char *
 neb_note_body_get(struct neb_note *note){
 	if (!note) return NULL;
