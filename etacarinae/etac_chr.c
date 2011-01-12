@@ -116,7 +116,6 @@ attr_icon_get(void *eacv, Evas_Object *obj, const char *part){
 		fmt = neb_attr_prop_get(eac->attr, "Format");
 	}
 
-
 	o = elm_label_add(obj);
 	val = neb_attr_value_get(eac->attr);
 	if (sub) {
@@ -181,7 +180,7 @@ attr_select(void *data, Evas_Object *obj, void *eventinfo){
 	Eina_Iterator *iter;
 	struct etac_attr *eac;
 	struct neb_elem *elem;
-	const char *filter;
+	const char *transform;
 
 	eac = data;
 
@@ -191,9 +190,9 @@ attr_select(void *data, Evas_Object *obj, void *eventinfo){
 		if (neb_elem_type_get(elem) == NEB_ELEM_REFERENCE){
 			printf("\tReference to %s\n",
 					neb_elem_reference_get(elem));
-			filter = neb_elem_ref_filter_get(elem);
-			if (filter)
-				printf("\t\tWith filter %s\n",filter);
+			transform = neb_elem_ref_transform_get(elem);
+			if (transform)
+				printf("\t\tWith transform %s\n",transform);
 		} else {
 			printf("\tValue: %d\n",
 					neb_elem_value_get(elem));
