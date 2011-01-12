@@ -82,6 +82,12 @@ function dnd35skill(value)
     return value
 end
 
+-- Immortal
+function immortalrankbonus(value)
+    if value == 0 then return -5 end
+    return value
+end
+
 -- Convert a stat value to it's bonus
 function dnd35stattransform(value)
     return math.floor((value - 10) / 2)
