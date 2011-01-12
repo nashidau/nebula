@@ -70,6 +70,7 @@ static const struct luaL_Reg attrfns[] = {
 	{ "value_get",	lneb_attr_value_get },
 	{ "value_add",	lneb_elem_value_add },
 	{ "prop_add",	lneb_attr_prop_add },
+	{ "property_add",lneb_attr_prop_add },
 	{ "ref_add",	lneb_elem_ref_add },
 	{ "lock",	lneb_lock },
 	{ "unlock",	lneb_unlock },
