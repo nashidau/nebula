@@ -21,6 +21,7 @@ enum {
 };
 
 static Eina_Bool attr_save(const void *list, void *attrv, void *fpv);
+static Eina_Bool note_save(const void *list, void *notev, void *fpv);
 
 /**
  * Create a new character and add it to nebula.
@@ -415,6 +416,11 @@ nebula_character_save(struct neb_character *ch, const char *file){
 	fprintf(fp,"  name=[[%s]],\n",ch->name);
 
 	/* FIXME: Notes */
+	fprintf(fp,  "notes = {\n");
+	iter = eina_list_iterator_new(ch->notes);
+	eina_iterator_foreach(iter, note_save, fp);
+	eina_iterator_free(iter);
+	fprintf(fp, "},\n");
 
 
 	/* Attrs */
@@ -462,6 +468,31 @@ attr_save(const void *list, void *attrv, void *fpv){
 	return true;
 }
 
+static Eina_Bool
+note_save(const void *list, void *notev, void *fpv){
+	struct neb_note *note = notev;
+	char *equals = strdup("");
+	int i;
+
+	fprintf(fpv,"    {\n      name = [[%s]],\n",note->name);
+
+	if (strstr(note->note,"]]")){
+		equals = strdup("=");
+		for (i = 0 ; strstr(note->note,equals) ; i ++){
+			equals = realloc(equals, i + 1);
+			memset(equals,'=',i);
+			equals[i] = 0;
+		}
+	}
+
+	fprintf(fpv,"      note = [%s[%s]%s],\n",equals,note->note,equals);
+	fprintf(fpv,"    },\n");
+	free(equals);
+
+	/* FIXME: tags */
+
+	return true;
+}
 
 
 
