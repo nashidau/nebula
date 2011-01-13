@@ -21,6 +21,13 @@ struct neb_character {
 	Eina_List *notes;
 };
 
+/** @todo: Use string shares for at least the tags */
+struct neb_note {
+	char *name;
+	char *note;
+
+	Eina_List *tags;
+};
 
 
 struct elem_type {

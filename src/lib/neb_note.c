@@ -28,15 +28,6 @@
 #include "nebula_private.h"
 
 
-/** @todo: Use string shares for at least the tags */
-
-struct neb_note {
-	char *name;
-	char *note;
-
-	Eina_List *tags;
-};
-
 /**
  * Add a new note to a character.
  *
