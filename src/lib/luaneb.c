@@ -363,15 +363,49 @@ lneb_attr_prop_add(lua_State *L){
 
 
 static int
-lneb_note_add(lua_State *lua){
-	return luaL_error(lua, "note add: Not implemented");
-	lua_pushnil(lua);
+lneb_note_add(lua_State *L){
+	struct lneb_char *lnc;
+	const char *key;
+	const char *value;
+	struct neb_note *note;
+
+	lnc = luaL_checkudata(L, 1, LNEB_CHARACTER);
+	key = luaL_checkstring(L,2);
+	luaL_argcheck(L, lnc && lnc->ch, 1, "Character must be initied");
+
+	if (lua_isstring(L,3))
+		value = lua_tostring(L,3);
+	else
+		value = NULL;
+
+	note = neb_character_note_add(lnc->ch, key, value);
+
+	lua_pushboolean(L,note != NULL);
 	return 1;
 }
+
 static int
-lneb_note_get(lua_State *lua){
-	return luaL_error(lua, "note get: Not implemented");
-	lua_pushnil(lua);
+lneb_note_get(lua_State *L){
+	struct lneb_char *lnc;
+	const char *key;
+	const char *value;
+	struct neb_note *note;
+
+	lnc = luaL_checkudata(L, 1, LNEB_CHARACTER);
+	key = luaL_checkstring(L,2);
+	luaL_argcheck(L, lnc && lnc->ch, 1, "Character must be initied");
+
+	note = neb_character_note_find(lnc->ch, key);
+	if (!note){
+		lua_pushnil(L);
+		lua_pushfstring(L, "Unable to find note '%s'",key);
+		return 2;
+	}
+	value = neb_note_body_get(note);
+	if (value)
+		lua_pushstring(L,value);
+	else
+		lua_pushboolean(L,0);
 	return 1;
 }
 
