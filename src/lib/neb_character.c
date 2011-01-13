@@ -385,8 +385,6 @@ neb_character_load(struct nebula *neb, const char *name){
 		luaneb_init(neb);
 
 	rv = luaL_dofile(neb->L, name);
-printf("%d rv\n",rv);
-luaneb_stackdump(neb->L);
 
 	ch = luaneb_tocharacter(neb->L,1);
 	lua_pop(neb->L,1);
