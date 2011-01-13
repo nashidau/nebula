@@ -9,6 +9,12 @@ function nebload(data)
     ch = n.character_add()
     if data.name then ch:name_set(data.name) end
 
+    if data.notes then
+	for i,note in ipairs(data.notes) do
+	    local no = ch:note_add(note.name, note.note);
+	end
+    end
+
     if data.attrs then
 	for i,ad in ipairs(data.attrs) do
 	    local at = ch:attr_add(ad)
