@@ -50,6 +50,7 @@ struct neb_elem *neb_attr_elem_add(struct neb_attr *,
 struct neb_elem *neb_attr_elem_value_add(struct neb_attr *, int value);
 struct neb_elem *neb_attr_elem_reference_add(struct neb_attr *,
 		const char *refname, bool check);
+int neb_attr_elem_del(struct neb_attr *, struct neb_elem *);
 int neb_attr_value_get(struct neb_attr *attr);
 int neb_attr_lock(struct neb_attr *attr);
 int neb_attr_unlock(struct neb_attr *attr);

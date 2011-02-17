@@ -127,6 +127,22 @@ neb_attr_elem_reference_add(struct neb_attr *at, const char *ref, bool check){
 }
 
 /**
+ * Delete an element
+ *
+ * @todo Document this
+ * FIXME: Document this
+ */
+int
+neb_attr_elem_del(struct neb_attr *at, struct neb_elem *el){
+	if (!at) return -1;
+	if (!el) return 0;
+
+	at->elems = eina_list_remove(at->elems, el);
+
+	return 0;
+}
+
+/**
  * Get the type of an element.
  * Useful to be able to inspect it.
  *
