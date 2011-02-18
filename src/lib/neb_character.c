@@ -336,6 +336,31 @@ neb_attr_prop_get(struct neb_attr *attr, const char *prop){
 	return NULL;
 }
 
+/**
+ * Get a list of all property names on the attribute.
+ * 
+ * This must be freed by calling neb_attr_prop_list_free().
+ * @todo Document this
+ */
+Eina_List *
+neb_attr_prop_list_get(struct neb_attr *attr){
+	struct neb_prop *p;
+	Eina_List *r,*l;
+
+	r = NULL;
+	for (l = attr->props ; l ; l = l->next){
+		p = l->data;
+		r = eina_list_append(r, p->prop);
+	}
+	return NULL;
+}
+
+int
+neb_attr_prop_list_free(Eina_List *l){
+	if (l) eina_list_free(l);
+	return 0;
+}
+
 
 Eina_Iterator *
 neb_attr_elem_iter_new(struct neb_attr *attr){
