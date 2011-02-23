@@ -352,7 +352,7 @@ neb_attr_prop_list_get(struct neb_attr *attr){
 		p = l->data;
 		r = eina_list_append(r, p->prop);
 	}
-	return NULL;
+	return r;
 }
 
 int
