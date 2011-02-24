@@ -321,6 +321,22 @@ neb_attr_prop_add(struct neb_attr *attr, const char *prop,
 	return 0;
 }
 
+/**
+ * Delete an prop
+ *
+ * @todo Document this
+ * FIXME: Document this
+ */
+int
+neb_attr_prop_del(struct neb_attr *at, struct neb_prop *pr){
+	if (!at) return -1;
+	if (!pr) return 0;
+
+	at->props = eina_list_remove(at->props, pr);
+
+	return 0;
+}
+
 const char *
 neb_attr_prop_get(struct neb_attr *attr, const char *prop){
 	struct neb_prop *p;
@@ -361,14 +377,17 @@ neb_attr_prop_list_free(Eina_List *l){
 	return 0;
 }
 
+Eina_Iterator *
+neb_attr_prop_iter_new(struct neb_attr *attr){
+	if (!attr) return NULL;
+	return eina_list_iterator_new(attr->props);
+}
 
 Eina_Iterator *
 neb_attr_elem_iter_new(struct neb_attr *attr){
 	if (!attr) return NULL;
 	return eina_list_iterator_new(attr->elems);
 }
-
-
 
 /**
  * Add a character to be managed by nebula.
