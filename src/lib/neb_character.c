@@ -322,10 +322,11 @@ neb_attr_prop_add(struct neb_attr *attr, const char *prop,
 }
 
 /**
- * Delete an prop
+ * Delete the props list of an existence attribute.
  *
- * @todo Document this
- * FIXME: Document this
+ * @param at Attribute to get the props list.
+ * @param pr the props list be deleted from an existence attribute.
+ * @return -1 on error, 0 otherwise.
  */
 int
 neb_attr_prop_del(struct neb_attr *at, struct neb_prop *pr){
@@ -377,6 +378,14 @@ neb_attr_prop_list_free(Eina_List *l){
 	return 0;
 }
 
+
+/**
+ * Create the iterator of a attr->props list on the existence attribute.
+ * 
+ * @param attr Attribute to get the props list. 
+ * @return NULL on error, the iterator of a attr->props list
+ *  on the attribute otherwise.
+ */
 Eina_Iterator *
 neb_attr_prop_iter_new(struct neb_attr *attr){
 	if (!attr) return NULL;
