@@ -165,6 +165,23 @@ neb_character_attr_add(struct neb_character *nc, const char *name){
 }
 
 /**
+ * Delete the attrs list of an existence character.
+ *
+ * @param ch Charatert is used to get the attrs list.
+ * @param at the ch->attrs list be deleted from an existence charatert.
+ * @return -1 on error, 0 otherwise.
+ */
+int
+neb_ch_attr_del(struct neb_character *ch, struct neb_attr *at){
+	if (!ch) return -1;
+	if (!at) return 0;
+
+	ch->attrs = eina_list_remove(ch->attrs, at);
+
+	return 0;
+}
+
+/**
  * Get a particular attribute.
  *
  * The attribute handle is normally used to add elements, filters or tags to.

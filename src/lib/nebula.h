@@ -32,6 +32,7 @@ int nebula_character_save(struct neb_character *ch, const char *file);
 
 struct neb_attr *neb_character_attr_add(struct neb_character *,
 		const char *name);
+int neb_ch_attr_del(struct neb_character *ch, struct neb_attr *at);
 struct neb_attr *neb_character_attr_get(struct neb_character *,
 		const char *name);
 
