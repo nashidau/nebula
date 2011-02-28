@@ -48,13 +48,14 @@ static const struct elem_type types[] = {
 };
 
 static void *
-el_add(struct neb_attr *at, enum neb_elem_type type){
+el_add(struct neb_attr *at, const char *note,  enum neb_elem_type type){
 	struct neb_elem *el;
 	if (!at) return NULL;
 
 	el = calloc(1,types[type].size);
 	el->type = types + type;
 	el->magic = ELEM_MAGIC;
+	el->note = note ? strdup(note) : NULL;
 
 	neb_attribute_element_append(at, el);
 
@@ -73,10 +74,10 @@ el_add(struct neb_attr *at, enum neb_elem_type type){
  * @return New element.
  */
 struct neb_elem *
-neb_attr_elem_value_add(struct neb_attr *at, int value){
+neb_attr_elem_value_add(struct neb_attr *at, const char *note, int value){
 	struct neb_elem_value *el;
 
-	el = el_add(at, NEB_ELEM_VALUE);
+	el = el_add(at, note, NEB_ELEM_VALUE);
 	if (!el) return NULL;
 
 	el->value = value;
@@ -105,7 +106,8 @@ neb_attr_elem_value_add(struct neb_attr *at, int value){
  * @param check Check reference is valid (Recommended)
  */
 struct neb_elem *
-neb_attr_elem_reference_add(struct neb_attr *at, const char *ref, bool check){
+neb_attr_elem_reference_add(struct neb_attr *at, const char *note,
+		const char *ref, bool check){
 	struct neb_elem_ref *el;
 	struct neb_attr *at2;
 
@@ -117,7 +119,7 @@ neb_attr_elem_reference_add(struct neb_attr *at, const char *ref, bool check){
 		if (!at2) return NULL;
 	}
 
-	el = el_add(at, NEB_ELEM_REFERENCE);
+	el = el_add(at, note, NEB_ELEM_REFERENCE);
 	if (!el) return NULL;
 
 	el->ref = strdup(ref);
@@ -223,7 +225,7 @@ neb_elem_ref_transform_set(struct neb_elem *el, const char *transform){
  * Get the transform for a reference if set.
  *
  * @param el Element.
- * @return NULL
+ * @return Transform, or NULL if no transform or error.
  */
 const char *
 neb_elem_ref_transform_get(struct neb_elem *el){
@@ -234,6 +236,22 @@ neb_elem_ref_transform_get(struct neb_elem *el){
 	elr = (void *)el;
 
 	return elr->transform;
+}
+
+/**
+ * Get the note field (if any) from an element.
+ *
+ * If there is no note, returns NULL.
+ *
+ * The string returned should not be freed.
+ *
+ * @param el Element
+ * @return The note, or NULL if no note or error.
+ */
+const char *
+neb_elem_note_get(const struct neb_elem *el){
+	if (!el) return NULL;
+	return el->note;
 }
 
 
@@ -281,12 +299,20 @@ el_ref_value_get(struct neb_elem *el){
 static int
 el_value_save(struct neb_elem *el, FILE *fp){
 	struct neb_elem_value *val;
+	char *str;
 	if (!el || !fp) return -1;
 
 	val = (struct neb_elem_value *)el;
 
-	fprintf(fp,"        { type='value', value = %d },\n", val->value);
-	/* Common save here */
+	if (el->note){
+		str = luaneb_quote_str(el->note);
+		fprintf(fp,"        { type='value', note=%s, value=%d },\n",
+				str, val->value);
+		free(str);
+	} else {
+		fprintf(fp,"        { type='value', value = %d },\n",
+				val->value);
+	}
 
 	return 0;
 }
@@ -294,15 +320,26 @@ el_value_save(struct neb_elem *el, FILE *fp){
 static int
 el_ref_save(struct neb_elem *el, FILE *fp){
 	struct neb_elem_ref *ref;
+	char *nstr = NULL, *rstr;
 
 	ref = (struct neb_elem_ref *)el;
 
-	/* FIXME: Esacpe */
-	fprintf(fp,"        { type = 'ref', ref = [[%s]]",ref->ref);
+	rstr = luaneb_quote_str(ref->ref);
+
+	if (el->note){
+		nstr = luaneb_quote_str(el->note);
+		fprintf(fp,"        { type='ref', note=%s, ref=%s", rstr, nstr);
+	} else {
+		fprintf(fp,"        { type = 'ref', ref=%s",rstr);
+	}
+
+
 	if (ref->transform)
 		fprintf(fp,", transform = [[%s]]",ref->transform);
 	fprintf(fp," },\n");
-	/* Common save here */
+
+	if (nstr) free(nstr);
+	free(rstr);
 
 	return 0;
 }

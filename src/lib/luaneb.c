@@ -460,14 +460,16 @@ lneb_elem_value_add(lua_State *L){
 	struct lneb_ref *lnr;
 	struct lneb_attr *lna;
 	int val;
+	const char *note;
 
 	lna = luaL_checkudata(L, 1, LNEB_ATTRIBUTE);
 	val = luaL_checknumber(L, 2);
+	note = luaL_optstring(L,3,NULL);
 
 	/* FIXME: Should be lnev_elem? */
 	lnr = lua_newuserdata(L, sizeof(struct lneb_ref));
 	lnr->neb = lna->neb;
-	lnr->elem = neb_attr_elem_value_add(lna->attr, val);
+	lnr->elem = neb_attr_elem_value_add(lna->attr, note, val);
 
 	return 1;
 }
@@ -492,6 +494,7 @@ lneb_elem_ref_add(lua_State *L){
 	struct lneb_attr *lna;
 	const char *refto = NULL;
 	const char *transform = NULL;
+	const char *note = NULL;
 	bool docheck = true;
 
 	lna = luaL_checkudata(L, 1, LNEB_ATTRIBUTE);
@@ -500,7 +503,9 @@ lneb_elem_ref_add(lua_State *L){
 		refto = lua_tostring(L,-1);
 		lua_getfield(L,2,"transform");
 		transform = lua_tostring(L,-1);
-		lua_pop(L,2);
+		lua_getfield(L,2, "note");
+		note = lua_tostring(L,-1);
+		lua_pop(L,3);
 	} else {
 		refto = luaL_checkstring(L,2);
 	}
@@ -516,7 +521,7 @@ lneb_elem_ref_add(lua_State *L){
 
 	lnr = lua_newuserdata(L, sizeof(struct lneb_ref));
 	lnr->neb = lna->neb;
-	lnr->elem = neb_attr_elem_reference_add(lna->attr, refto, docheck);
+	lnr->elem = neb_attr_elem_reference_add(lna->attr, note, refto,docheck);
 	if (!lnr->elem){
 		/* FIXME clean up */
 		printf("%p %s %d\n",lna->attr,refto, docheck);
@@ -556,3 +561,52 @@ luaneb_stackdump(lua_State* l){
     }
     return top;
 }
+
+
+/**
+ * Returns a quoted version of a string safe for printing as Lua code.
+ *
+ * For simplicity it always uses [[ ]] style strings (even without newlines).
+ * If there is a ]] in the string it will try [=[ until it finds one which is
+ * safe.
+ *
+ * You want to use it like:
+ * 	str = luaneb_quote_str(foo->val);
+ * 	fprintf(luafile, "{ val = %s }", str);
+ * 	free(str);
+ *
+ * @param str String to save
+ * @return String that must be freed.
+ */
+char *
+luaneb_quote_str(const char *str){
+	char *equals = strdup("");
+	char *buf;
+	int i;
+	int len;
+
+	if (!str) return NULL;
+
+	if (strstr(str,"]]")){
+		equals = strdup("=");
+		for (i = 0 ; strstr(str,equals) ; i ++){
+			equals = realloc(equals, i + 1);
+			memset(equals,'=',i);
+			equals[i] = 0;
+		}
+	}
+
+	len = strlen(str);
+	len += 2 * strlen(equals) + 4 /* [[ ]] */+ 1 /* \0 */;
+	buf = malloc(len);
+	if (!buf){
+		free(equals);
+		return buf;
+	}
+	snprintf(buf,len, "[%s[%s]%s]",equals, str, equals);
+
+	free(equals);
+
+	return buf;
+}
+

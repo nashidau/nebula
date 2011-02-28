@@ -522,23 +522,14 @@ attr_save(const void *list, void *attrv, void *fpv){
 static Eina_Bool
 note_save(const void *list, void *notev, void *fpv){
 	struct neb_note *note = notev;
-	char *equals = strdup("");
-	int i;
+	char *str;
+
+	str = luaneb_quote_str(note->note);
 
 	fprintf(fpv,"    {\n      name = [[%s]],\n",note->name);
-
-	if (strstr(note->note,"]]")){
-		equals = strdup("=");
-		for (i = 0 ; strstr(note->note,equals) ; i ++){
-			equals = realloc(equals, i + 1);
-			memset(equals,'=',i);
-			equals[i] = 0;
-		}
-	}
-
-	fprintf(fpv,"      note = [%s[%s]%s],\n",equals,note->note,equals);
+	fprintf(fpv,"      note = %s,\n",str);
 	fprintf(fpv,"    },\n");
-	free(equals);
+	free(str);
 
 	/* FIXME: tags */
 

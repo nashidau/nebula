@@ -103,7 +103,7 @@ attr_icon_get(void *eacv, Evas_Object *obj, const char *part){
 
 	ETAC_MAGIC_CHECK(eac, NULL);
 
-	if (strcmp("elm.swallow.end",part) != 0)
+	if (strcmp("elm.swallow.icon",part) == 0)
 		return NULL;
 
 	sub = neb_attr_prop_get(eac->attr,"Subvalue");
@@ -181,6 +181,7 @@ attr_select(void *data, Evas_Object *obj, void *eventinfo){
 	struct etac_attr *eac;
 	struct neb_elem *elem;
 	const char *transform;
+	const char *note;
 
 	eac = data;
 
@@ -197,6 +198,8 @@ attr_select(void *data, Evas_Object *obj, void *eventinfo){
 			printf("\tValue: %d\n",
 					neb_elem_value_get(elem));
 		}
+		note = neb_elem_note_get(elem);
+		if (note) printf("\t\tNote: %s\n",note);
 	}
 }
 

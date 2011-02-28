@@ -24,11 +24,12 @@ function nebload(data)
 		    r.ref = ed.ref
 		    r.transform = ed.transform
 		    r.check = false
+		    r.note = ed.note
 		    at:ref_add(r)
 		elseif ed.type == "value" then
-		    at:value_add(ed.value)
+		    at:value_add(ed.value, ed.note)
 		else
-		    print("Unknwon element:",ed.type)
+		    print("Unknown element:",ed.type)
 		end
 	    end
 	end

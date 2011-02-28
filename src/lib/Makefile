@@ -24,13 +24,13 @@ CHECK=				\
 	check/check_character.o \
 	check/check_note.o
 
-${LIBTARGET}: ${SOURCES} helpers.o
+${LIBTARGET}: ${SOURCES} helpers.o nebula_private.h
 	${CC} -fPIC -Os -Wall -shared -Wl,-soname,${LIBTARGET} -o ${LIBTARGET} \
 		${CFLAGS} ${LDFLAGS}	\
                 ${SOURCES} helpers.o
 
 
-nebula.c: nebula.h
+nebula.c: nebula.h nebula_private.h
 
 helpers.o: helpers.lua
 	ld -r -b binary -o helpers.o helpers.lua

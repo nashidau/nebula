@@ -40,7 +40,7 @@ struct elem_type {
 struct neb_elem {
 	int magic;
 	const struct elem_type *type;
-	const char *name;
+	const char *note;
 };
 
 struct neb_attr {
@@ -68,3 +68,5 @@ int neb_attribute_element_append(struct neb_attr *attr, struct neb_elem *el);
 int luaneb_init(struct nebula *);
 int luaneb_stackdump(lua_State *);
 struct neb_character *luaneb_tocharacter(lua_State *L, int index);
+
+char *luaneb_quote_str(const char *str);

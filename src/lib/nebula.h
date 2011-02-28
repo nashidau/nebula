@@ -48,8 +48,9 @@ Eina_List *neb_charcter_note_tagged_get(struct neb_character *ch, const char *);
 
 struct neb_elem *neb_attr_elem_add(struct neb_attr *,
 		enum neb_elem_type);
-struct neb_elem *neb_attr_elem_value_add(struct neb_attr *, int value);
-struct neb_elem *neb_attr_elem_reference_add(struct neb_attr *,
+struct neb_elem *neb_attr_elem_value_add(struct neb_attr *, const char *,
+		int value);
+struct neb_elem *neb_attr_elem_reference_add(struct neb_attr *, const char *,
 		const char *refname, bool check);
 int neb_attr_elem_del(struct neb_attr *, struct neb_elem *);
 int neb_attr_value_get(struct neb_attr *attr);
@@ -74,5 +75,6 @@ enum neb_elem_type neb_elem_type_get(struct neb_elem *el);
 const char *neb_elem_reference_get(struct neb_elem *el);
 int neb_elem_value_get(struct neb_elem *el);
 const char *neb_elem_ref_transform_get(struct neb_elem *el);
+const char *neb_elem_note_get(const struct neb_elem *el);
 
 #endif
