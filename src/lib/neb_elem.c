@@ -328,7 +328,7 @@ el_ref_save(struct neb_elem *el, FILE *fp){
 
 	if (el->note){
 		nstr = luaneb_quote_str(el->note);
-		fprintf(fp,"        { type='ref', note=%s, ref=%s", rstr, nstr);
+		fprintf(fp,"        { type='ref', note=%s, ref=%s", nstr, rstr);
 	} else {
 		fprintf(fp,"        { type = 'ref', ref=%s",rstr);
 	}
