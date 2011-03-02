@@ -38,12 +38,14 @@ static const struct elem_type types[] = {
 		.size = sizeof(struct neb_elem_value),
 		.value_get = el_value_value_get,
 		.save = el_value_save,
+		.free = el_value_free,
 	},
 	[NEB_ELEM_REFERENCE] = {
 		.type = NEB_ELEM_REFERENCE,
 		.size = sizeof(struct neb_elem_ref),
 		.value_get = el_ref_value_get,
 		.save = el_ref_save,
+		.free = el_ref_free,
 	},
 };
 
@@ -345,4 +347,33 @@ el_ref_save(struct neb_elem *el, FILE *fp){
 }
 
 
+static int
+el_value_free(struct neb_elem *el){
+	struct neb_elem_value *val;
 
+	free(el->note);
+	el->ch = 0;
+	el->magic = ~el->magic;
+	free(el);
+	return 0;
+}
+
+static int
+el_ref_free(struct neb_elem *el){
+	struct neb_elem_ref *ref;
+
+	ref = (struct neb_elem_ref *)el;
+
+	free(el->note);
+	el->ch = 0;
+	el->magic = ~el->magic;
+
+	free(ref->ref);
+	free(ref->transform);
+
+	free(ref);
+
+	return 0;
+
+
+}
