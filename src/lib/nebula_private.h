@@ -41,7 +41,7 @@ struct elem_type {
 struct neb_elem {
 	int magic;
 	const struct elem_type *type;
-	const char *note;
+	char *note;
 };
 
 struct neb_attr {

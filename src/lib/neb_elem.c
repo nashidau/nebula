@@ -13,6 +13,8 @@ static int el_value_value_get(struct neb_elem *el);
 static int el_ref_value_get(struct neb_elem *el);
 static int el_value_save(struct neb_elem *el, FILE *fp);
 static int el_ref_save(struct neb_elem *el, FILE *fp);
+static int el_value_free(struct neb_elem *el);
+static int el_ref_free(struct neb_elem *el);
 
 enum {
 	/* FIXME: Unify nebula magics */
@@ -28,7 +30,7 @@ struct neb_elem_ref {
 	struct neb_elem elem;
 
 	struct neb_character *ch;
-	const char *ref;
+	char *ref;
 	char *transform;
 };
 
@@ -349,10 +351,10 @@ el_ref_save(struct neb_elem *el, FILE *fp){
 
 static int
 el_value_free(struct neb_elem *el){
-	struct neb_elem_value *val;
+//	struct neb_elem_value *val;
 
 	free(el->note);
-	el->ch = 0;
+//	el->ch = 0;
 	el->magic = ~el->magic;
 	free(el);
 	return 0;
@@ -365,7 +367,7 @@ el_ref_free(struct neb_elem *el){
 	ref = (struct neb_elem_ref *)el;
 
 	free(el->note);
-	el->ch = 0;
+//	el->ch = 0;
 	el->magic = ~el->magic;
 
 	free(ref->ref);
