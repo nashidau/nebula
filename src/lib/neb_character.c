@@ -165,18 +165,38 @@ neb_character_attr_add(struct neb_character *nc, const char *name){
 }
 
 /**
- * Delete the attrs list of an existence character.
+ * Delete an attribute from a character.
  *
- * @param ch Charatert is used to get the attrs list.
- * @param at the ch->attrs list be deleted from an existence charatert.
+ * The attr pointer is no longer valid after this call.
+ *
+ * @param ch Character to delete attr from.
+ * @param at The attribute to delete.
  * @return -1 on error, 0 otherwise.
  */
 int
 neb_ch_attr_del(struct neb_character *ch, struct neb_attr *at){
+	struct neb_prop *prop;
+	struct neb_elem *elem;
+
 	if (!ch) return -1;
 	if (!at) return 0;
 
 	ch->attrs = eina_list_remove(ch->attrs, at);
+
+
+	EINA_LIST_FREE(at->elems, elem){
+		elem->type->free(elem);
+	}
+
+	EINA_LIST_FREE(at->props, prop){
+		free((void *)prop->prop);
+		free((void *)prop->value);
+		free(prop);
+	}
+
+	free(at->name);
+	at->magic = -1;
+	free(at);
 
 	return 0;
 }
