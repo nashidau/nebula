@@ -21,7 +21,7 @@ int nebula_free(struct nebula *);
 struct neb_character *neb_character_new(struct nebula *);
 
 int neb_character_name_set(struct neb_character *nc, const char *name);
-const char * neb_character_name_get(struct neb_character *nc);
+const char *neb_character_name_get(struct neb_character *nc);
 struct neb_character *neb_character_get(struct nebula *nebula, const char *name);
 struct nebula *neb_character_neb_get(struct neb_character *nc);
 
@@ -38,6 +38,7 @@ struct neb_attr *neb_character_attr_get(struct neb_character *,
 
 struct neb_note *neb_character_note_add(struct neb_character *,
 		const char *title, const char *body);
+int neb_ch_note_del(struct neb_character *nc, struct neb_note *nt);
 int neb_note_text_append(struct neb_note *, const char *);
 const char *neb_note_title_get(struct neb_note *);
 const char *neb_note_body_get(struct neb_note *);

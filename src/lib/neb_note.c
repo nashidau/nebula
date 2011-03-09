@@ -76,6 +76,27 @@ neb_character_note_add(struct neb_character *nc, const char *title,
 }
 
 /**
+ * Delete the notes list from a character.
+ *
+ * @param nc Character to get the notes list.
+ * @param nt the notes list be deleted from a character.
+ * @return -1 on error, 0 otherwise.
+ */
+int
+neb_ch_note_del(struct neb_character *nc, struct neb_note *nt){
+	if (!nc) return -1;
+	if (!nt) return 0;
+
+	nc->notes = eina_list_remove(nc->notes, nt);
+
+	if (nt->name) free((char *) nt->name);
+	if (nt->note) free((char *) nt->note);
+	if (nt) free(nt);
+
+	return 0;
+}
+
+/**
  * Get a note by it's title.
  *
  * This retrieves the note with the given title.  Titles are (meant) to be
@@ -211,6 +232,7 @@ neb_note_text_append(struct neb_note *note, const char *text){
 
 	note->note = nbuf;
 	memcpy(note->note + len, text, len2);
+	note->note[len + len2] = '\0';
 
 	return 0;
 }
