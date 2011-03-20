@@ -1,0 +1,59 @@
+
+local attributes = {
+    { name="Intelligence",  group="Mental" },
+    { name="Wits",	    group="Mental" },
+    { name="Resolve",	    group="Mental" },
+    { name="Strength",	    group="Physical" },
+    { name="Dexterity",	    group="Physical" },
+    { name="Stamina",	    group="Physical" },
+    { name="Presence",	    group="Social" },
+    { name="Manipulation",  group="Social" },
+    { name="Composure",	    group="Social" },
+}
+
+local skills = {
+    { name="Academics",	    group="Mental" },
+    { name="Computer",	    group="Mental" },
+    { name="Crafts",	    group="Mental" },
+    { name="Investigation", group="Mental" },
+    { name="Medicine",	    group="Mental" },
+    { name="Occult",	    group="Mental" },
+    { name="Politics",	    group="Mental" },
+    { name="Science",	    group="Mental" },
+    { name="Athletics",	    group="Physical" },
+    { name="Brawl",	    group="Physical" },
+    { name="Drive",	    group="Physical" },
+    { name="Firearms",	    group="Physical" },
+    { name="Larceny",	    group="Physical" },
+    { name="Stealth",	    group="Physical" },
+    { name="Survival",	    group="Physical" },
+    { name="Weaponry",	    group="Physical" },
+    { name="Animal Ken",    group="Social" },
+    { name="Empathy",	    group="Social" },
+    { name="Expression",    group="Social" },
+    { name="Intimidation",  group="Social" },
+    { name="Persuasion",    group="Social" },
+    { name="Socialize",	    group="Social" },
+    { name="Streetwise",    group="Social" },
+    { name="Subterfuge",    group="Social" },
+}
+
+
+
+local function init(ch)
+    for i,attr in ipairs(attributes) do
+	local at = ch:attr_add(attr.name)
+	at:prop_add("Group", "Attributes/" .. attr.group)
+    end
+    for i,skill in ipairs(skills) do
+	local at = ch:attr_add(skill.name)
+	at:prop_add("Group", "Skills/" .. skill.group)
+    end
+end
+
+init(ch)
+
+
+-- vim: set sw=4 sts=4 syn=lua : 
+
+
