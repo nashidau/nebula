@@ -127,6 +127,9 @@ neb_character_neb_get(struct neb_character *nc){
 	return nc->neb;
 }
 
+
+
+
 /**
  * Adds a new attribute to the given character.
  *

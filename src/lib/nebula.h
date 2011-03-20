@@ -25,6 +25,8 @@ const char *neb_character_name_get(struct neb_character *nc);
 struct neb_character *neb_character_get(struct nebula *nebula, const char *name);
 struct nebula *neb_character_neb_get(struct neb_character *nc);
 
+int neb_character_template_apply(struct neb_character *, const char *template);
+
 
 
 struct neb_character *neb_character_load(struct nebula *nebula, const char *name);

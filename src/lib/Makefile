@@ -1,4 +1,4 @@
-PKGS=eina-0 lua5.1
+PKGS=eina lua5.1
 
 CFLAGS+=`pkg-config --cflags ${PKGS}` 
 LDFLAGS+=`pkg-config --libs ${PKGS}` -rdynamic -ldl
@@ -22,6 +22,7 @@ CHECK=				\
 	check/check.o		\
 	check/check_attr.o	\
 	check/check_character.o \
+	check/check_template.o \
 	check/check_note.o
 
 ${LIBTARGET}: ${SOURCES} helpers.o nebula_private.h

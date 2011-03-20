@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <string.h>
 
@@ -7,6 +8,8 @@
 
 #include "nebula.h"
 #include "nebula_private.h"
+
+static int luaneb_character_push(lua_State *, struct neb_character *nc, const char *);
 
 static int lneb_character_add(lua_State *);
 static int lneb_character_get(lua_State *);
@@ -119,6 +122,86 @@ luaneb_init(struct nebula *neb){
 
 	return 0;
 }
+
+
+
+/**
+ * Apply a template to a character.
+ *
+ * The character will be pushed as the value 'ch' into the global space.
+ *
+ * @param nc Nebula character.
+ * @param template Name of the file.
+ * @return 0 on success.
+ */
+int
+neb_character_template_apply(struct neb_character *nc, const char *template){
+	struct nebula *neb;
+	lua_State *L;
+	int rv;
+
+	if (!nc || !template) return -1;
+
+	neb = nc->neb;
+	L = neb->L;
+	assert(neb);
+	assert(L);
+
+	/* open the template */
+	rv = luaL_loadfile(L, template);
+	if (rv){
+		if (rv == LUA_ERRFILE) printf("No file %s\n",template);
+		if (rv == LUA_ERRSYNTAX) printf("Syntax error\n");
+		if (rv == LUA_ERRMEM) printf("Memory error\n");
+		printf("Erg an error from loadfile\n");
+		return -1;
+	}
+
+	/* push the character */
+	luaneb_character_push(L,nc,"ch");
+
+	/* Call the template */
+	rv = lua_pcall(L,0, 1, 0);
+	if (rv){
+		printf("Error with pcall\n");
+		printf("\tError: %s\n",lua_tostring(L,-1));
+		return -1;
+	}
+
+	/* Destroy the state */
+
+	return 0;
+}
+
+
+/**
+ * Push the character as the specified name.
+ *
+ * @param L Lua state to push to.
+ * @param nc Nebula character.
+ * @param name Name of variable to add.
+ * @param 0 on success, -1 on error. 
+ */
+static int
+luaneb_character_push(lua_State *L, struct neb_character *nc, const char *name){
+	struct lneb_char *lnc;
+
+	lnc = lua_newuserdata(L, sizeof(struct lneb_char));
+	if (!lnc) return -1;
+
+	luaL_getmetatable(L, LNEB_CHARACTER);
+	lua_setmetatable(L, -2);
+	lua_setglobal(L, name);
+
+	/* FIXME: Inefficient getting twice */
+	lnc->ch = nc;
+	lnc->neb = nc->neb;
+
+
+
+	return 0;
+}
+
 
 struct neb_character *
 luaneb_tocharacter(lua_State *L, int index){

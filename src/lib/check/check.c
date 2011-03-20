@@ -5,11 +5,13 @@
 Suite *character_suite(void);
 Suite *attribute_suite(void);
 Suite *note_suite(void);
+Suite *template_suite(void);
 
 static Suite *(*suites[])(void) = {
         character_suite,
         attribute_suite,
         note_suite,
+	template_suite,
 };
 #define N_SUITES ((int)(sizeof(suites)/sizeof(suites[0])))
 

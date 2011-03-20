@@ -1,6 +1,6 @@
 
 # FIXME: Shoudl be nebula
-PKGS=eina-0
+PKGS=eina
 
 CFLAGS+=`pkg-config --cflags ${PKGS}` 
 LDFLAGS+=`pkg-config --libs ${PKGS}` -rdynamic -ldl -lnebula -L../lib
