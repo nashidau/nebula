@@ -63,6 +63,18 @@ struct neb_prop {
 };
 
 
+#define LEMPTY(_L)                                                        \
+        do {                                                            \
+                if (lua_gettop(_L) < 0)                                  \
+                        printf("%s: %d: Stack underflow: %d\n",         \
+                                        __FUNCTION__,__LINE__,          \
+                                        lua_gettop(_L));                 \
+                if (lua_gettop(_L) > 0)                                  \
+                        luaneb_stack_dump(_L, "%s:%d End of function",   \
+                                __FUNCTION__, __LINE__);                \
+        } while (0)
+
+
 int nebula_character_add(struct nebula*, struct neb_character *);
 int neb_attribute_element_append(struct neb_attr *attr, struct neb_elem *el);
 
@@ -71,3 +83,5 @@ int luaneb_stackdump(lua_State *);
 struct neb_character *luaneb_tocharacter(lua_State *L, int index);
 
 char *luaneb_quote_str(const char *str);
+
+void luaneb_stack_dump(lua_State *L, const char *,...);

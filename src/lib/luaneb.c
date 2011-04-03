@@ -693,3 +693,113 @@ luaneb_quote_str(const char *str){
 	return buf;
 }
 
+
+int
+luaneb_table_count(lua_State *lua, int table){
+        int count = 0;
+        if (!lua_istable(lua, table))
+                return -1;
+        lua_pushnil(lua);  /* first key */
+        while (lua_next(lua, table) != 0) {
+                count ++;
+                lua_pop(lua, 1);
+        }
+        return count;
+}
+
+
+void
+luaneb_stack_dump(lua_State *lua,const char *msg,...){
+        int i,n,st;
+        const char *str;
+        va_list ap;
+
+        if (!msg)
+                printf("Current Lua Stack:");
+        else {
+                va_start(ap, msg);
+                vprintf(msg, ap);
+                va_end(ap);
+                printf("\n");
+        }
+        n = lua_gettop(lua);
+        if (n == 0){
+                printf("\tEmpty stack\n");
+                return;
+        } else if (n < 0){
+                printf("\tMassive stack corruption: Top is %d\n",n);
+                assert(n >= 0);
+                return;
+        }
+        for (i = 1; i <= n; i++){
+                printf("%7d: %s ",i, lua_typename(lua,lua_type(lua,i)));
+                switch (lua_type(lua,i)){
+                case LUA_TNIL:
+                        printf(" nil\n");
+                        break;
+                case LUA_TNUMBER:
+                        printf(" %lf\n",lua_tonumber(lua,i));
+                        break;
+                case LUA_TBOOLEAN:
+                        printf(" %s\n", lua_toboolean(lua,i) ? "true":"false");
+                        break;
+                case LUA_TSTRING:
+                        printf(" '%s'\n", lua_tostring(lua,i));
+                        break;
+                case LUA_TLIGHTUSERDATA:
+                        printf(" %p\n", lua_touserdata(lua,i));
+                        break;
+               case LUA_TTABLE:
+                        lua_pushstring(lua, "__mode");
+                        lua_rawget(lua,i);
+                        if (lua_isnil(lua, -1))
+                                lua_pop(lua,1);
+                        else {
+                                const char *m = lua_tostring(lua, -1);
+                                printf("Weak");
+                                if (strchr(m,'k')) printf(" keys");
+                                if (strchr(m,'v')) printf(" values");
+                                lua_pop(lua,1);
+                        }
+                        printf(" %d items (%d array items)",
+                                luaneb_table_count(lua,i),
+                                (int)lua_objlen(lua,i));
+                        if (luaL_callmeta(lua, i, "__tostring")){
+                                str = lua_tostring(lua,-1);
+                                printf("\t%s\n",str);
+                                lua_pop(lua,1);
+                        }
+                        printf("[%p]\n",lua_topointer(lua,i));
+                        lua_getfield(lua, i, "name");
+                        if (lua_isstring(lua,-1)){
+                                printf("\t\tQuest Name is %s\n",lua_tostring(lua,-1));
+                        }
+                        lua_pop(lua,1);
+                        break;
+                case LUA_TTHREAD:
+                        st = lua_objlen(lua,i);
+                        if (st == 0) printf(" %d Okay",st);
+                        else if (st == LUA_YIELD) printf(" %d yeild\n",st);
+                        else if (st == LUA_ERRRUN) printf(" %d Error Run\n",st);
+                        else if (st == LUA_ERRSYNTAX)
+                                printf(" %d Error Syntax\n",st);
+                        else if (st == LUA_ERRMEM)
+                                printf(" %d Error Memory\n",st);
+                        else if (st == LUA_ERRERR)
+                                printf(" %d Error Error\n",st);
+                        break;
+                case LUA_TFUNCTION:
+                        printf(" (%p)\n", lua_topointer(lua,i));
+                        break;
+                default:
+                        if (luaL_callmeta(lua, i, "__tostring")){
+                                str = lua_tostring(lua,-1);
+                                lua_pop(lua,1);
+                                printf(" %s\n",str);
+                        } else {
+                                printf(" (no __tostring function)\n");
+                        }
+                }
+        }
+}
+

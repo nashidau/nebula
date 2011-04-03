@@ -466,6 +466,7 @@ nebula_character_add(struct nebula *neb, struct neb_character *ch){
 
 /**
  * Load a character.
+ *
  */
 struct neb_character *
 neb_character_load(struct nebula *neb, const char *name){
@@ -477,12 +478,16 @@ neb_character_load(struct nebula *neb, const char *name){
 	if (!neb->L)
 		luaneb_init(neb);
 
+	LEMPTY(neb->L);
 	rv = luaL_dofile(neb->L, name);
+	LEMPTY(neb->L);
 
 	ch = luaneb_tocharacter(neb->L,1);
 	lua_pop(neb->L,1);
+	LEMPTY(neb->L);
 
 	rv = nebula_character_add(neb,ch);
+	LEMPTY(neb->L);
 
 	return ch;
 }
