@@ -170,6 +170,8 @@ neb_character_template_apply(struct neb_character *nc, const char *template){
 		printf("\tError: %s\n",lua_tostring(L,-1));
 		return -1;
 	}
+	/* FIXME: Check return */
+	lua_pop(L,1);
 
 	/* Destroy the state */
 
