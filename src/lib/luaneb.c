@@ -107,17 +107,20 @@ luaneb_init(struct nebula *neb){
 		neb->L = L;
 		luaL_openlibs(L);
 	}
+	LEMPTY(L);
 
 	lua_pushstring(L, "Nebula");  /* push address */
 	lua_pushlightuserdata(L, neb);  /* push value */
 	lua_settable(L, LUA_REGISTRYINDEX);
 
 
+	LEMPTY(L);
 	rv = luaL_dostring(L,"require[[nebula]]\n");
 	if (rv){
 		printf("Error with dostring: %s\n",lua_tostring(L,-1));
 		return -1;
 	}
+	LEMPTY(L);
 
 
 	return 0;
