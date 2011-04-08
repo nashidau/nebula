@@ -15,6 +15,7 @@
 
 #include "nebula.h"
 #include "nebula_private.h"
+#include "luaneb_filter.h"
 
 enum {
 	CHARACTER_MAGIC = 0x543423fe
@@ -249,8 +250,18 @@ neb_attr_value_get(struct neb_attr *attr){
 
 	if (!attr) return -1;
 
-	EINA_LIST_FOREACH(attr->elems, l, el){
-		value += el->type->value_get(el);
+	if (attr->filter){
+		int fref;
+		printf("Getting filter\n");
+		fref = luaneb_filter_init(attr);
+		EINA_LIST_FOREACH(attr->elems, l, el){
+			luaneb_filter_next(attr, fref, el);
+		}
+		value = luaneb_filter_done(attr, fref);
+	} else {
+		EINA_LIST_FOREACH(attr->elems, l, el){
+			value += el->type->value_get(el);
+		}
 	}
 	return value;
 }

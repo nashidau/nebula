@@ -13,7 +13,8 @@ SOURCES=			\
 	neb_character.c		\
 	neb_elem.c		\
 	neb_note.c		\
-	luaneb.c
+	luaneb.c		\
+	luaneb_filter.c	
 
 HEADERS=			\
 	nebula.h

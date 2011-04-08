@@ -97,6 +97,8 @@ static const struct luaL_Reg attrfns[] = {
 
 static const struct luaL_Reg elemfns[] = {
 	{ "__index",	lneb_elem_index },
+
+	{ NULL,		NULL },
 };
 
 #define LNEB_CHARACTER	"neb_character"
@@ -335,7 +337,6 @@ luaopen_nebula(lua_State *lua){
 	luaL_newmetatable(lua, LNEB_ATTRIBUTE);
 	luaL_openlib(lua, NULL, attrfns, 0);
 
-	luaL_newmetatable(lua, LNEB_ELEMENT);
 	luaL_newmetatable(lua, LNEB_NOTE);
 
 	len = _binary_helpers_lua_end - _binary_helpers_lua_start;
@@ -761,7 +762,7 @@ lneb_elem_index(lua_State *L){
         lne = luaL_checkudata(L, 1, LNEB_ELEMENT);
 
         if (streq(field,"value")){
-                lua_pushnumber(L,neb_elem_value_get(lne->elem));
+                lua_pushnumber(L,lne->elem->type->value_get(lne->elem));
         } else {
                 return luaL_error(L,"Unknown field %s",field);
         }

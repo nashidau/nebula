@@ -1,0 +1,16 @@
+Filters are a lua closure object to filter an attribute.
+
+When the filter is created it is passed the attibute.
+
+It should return a table with two entries:
+	next
+	done
+
+Next will be called with each direct element in turn.
+	it should return true, or false on error.
+
+Done will be called with no arguments, and must return the final value.
+
+
+
+

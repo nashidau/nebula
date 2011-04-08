@@ -95,7 +95,9 @@ int neb_attribute_element_append(struct neb_attr *attr, struct neb_elem *el);
 int luaneb_init(struct nebula *);
 int luaneb_stackdump(lua_State *);
 struct neb_character *luaneb_tocharacter(lua_State *L, int index);
-
 char *luaneb_quote_str(const char *str);
+
+int luaneb_attr_push(struct nebula *, struct neb_attr *attr);
+int luaneb_elem_push(struct nebula *, struct neb_elem *elem);
 
 void luaneb_stack_dump(lua_State *L, const char *,...);
