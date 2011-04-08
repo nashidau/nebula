@@ -67,6 +67,7 @@ int neb_attr_prop_del(struct neb_attr *at, struct neb_prop *pr);
 const char *neb_attr_prop_get(struct neb_attr *attr, const char *prop);
 Eina_List *neb_attr_prop_list_get(struct neb_attr *attr);
 int neb_attr_prop_list_free(Eina_List *);
+int neb_attr_filter_set(struct neb_attr *attr, const char *transform);
 
 int neb_elem_ref_transform_set(struct neb_elem *elem, const char *transform);
 

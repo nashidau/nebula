@@ -412,10 +412,52 @@ neb_attr_prop_list_get(struct neb_attr *attr){
 	return r;
 }
 
+/*
+ * FIXME: Document this
+ */
 int
 neb_attr_prop_list_free(Eina_List *l){
 	if (l) eina_list_free(l);
 	return 0;
+}
+
+
+/**
+ * Adds a filter to an attribute.
+ *
+ * All elements in the attribute will be filtered with the filter.
+ * Reference attributes will be evaluated, and their value passed to the
+ * transform.  Value attributes will be passed in directly.
+ *
+ * Only one transform may be placed on an attribute.
+ *
+ * @param attr Attribute to add transform too.
+ * @param filter Name of filter to apply.
+ * @return 0 on success, -1 on error, -2 if locked
+ * @todo Better error codes.
+ */
+int
+neb_attr_filter_set(struct neb_attr *attr, const char *filter){
+	if (!attr) return -1;
+
+	if (attr->lock) return -2;
+
+	/* Delete existing filter */
+	if (!filter){
+		if (attr->filter){
+			free((char *)attr->filter);
+			attr->filter = 0;
+		}
+		return 0;
+	}
+
+	if (attr->filter){
+		free((char *)attr->filter);
+	}
+	attr->filter = strdup(filter);
+
+	return 0;
+
 }
 
 
@@ -543,6 +585,11 @@ attr_save(const void *list, void *attrv, void *fpv){
 	Eina_List *l;
 
 	fprintf(fpv,"    {\n      name = [[%s]],\n",attr->name);
+
+	if (attr->filter){
+		fprintf(fpv,"      filter = %s,\n",
+				luaneb_quote_str(attr->filter));
+	}
 
 	if (attr->props){
 		fprintf(fpv,"      props = {\n");

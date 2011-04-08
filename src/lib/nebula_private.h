@@ -45,14 +45,24 @@ struct neb_elem {
 };
 
 struct neb_attr {
+	/** Attribute magic number */
 	int magic;
 
+	/** Character this attribute belongs too */
 	struct neb_character *ch;
+	/** Name of the attribute */
 	char *name;
 
+	/** Lock bit: Don't change if this is set */
 	unsigned int lock;
 
+	/** Attributes transform, if any */
+	const char *filter;
+
+	/** The list of elements for this attribute */
 	Eina_List *elems;
+
+	/** A list of properties on the attribute */
 	/* FIXME: A hash */
 	Eina_List *props;
 };
@@ -74,6 +84,10 @@ struct neb_prop {
                                 __FUNCTION__, __LINE__);                \
         } while (0)
 
+#ifndef streq
+/** Returns true, if two strings are equal */
+#define streq(a,b) (strcmp((a),(b)) == 0)
+#endif
 
 int nebula_character_add(struct nebula*, struct neb_character *);
 int neb_attribute_element_append(struct neb_attr *attr, struct neb_elem *el);
