@@ -1,5 +1,14 @@
 
-attributes = {
+local notes = {
+    "Concept",
+    "Virtue",
+    "Vice",
+    "Faction",
+    "Group Name",
+    "Chronicle",
+}
+
+local attributes = {
     { name="Intelligence",  group="Mental" },
     { name="Wits",	    group="Mental" },
     { name="Resolve",	    group="Mental" },
@@ -11,7 +20,7 @@ attributes = {
     { name="Composure",	    group="Social" },
 }
 
-skills = {
+local skills = {
     { name="Academics",	    group="Mental" },
     { name="Computer",	    group="Mental" },
     { name="Crafts",	    group="Mental" },
@@ -40,20 +49,73 @@ skills = {
 
 
 
-function init(ch)
+local function init(ch)
+    local at
+
+    for i,note in ipairs(notes) do
+	local n = ch:note_add(note,note)
+    end
+
     for i,attr in ipairs(attributes) do
 	local at = ch:attr_add(attr.name)
 	at:prop_add("Group", "Attributes/" .. attr.group)
+	at:value_add(1,"Base");
     end
     for i,skill in ipairs(skills) do
 	local at = ch:attr_add(skill.name)
-	at:prop_add("Group", "Skills/" .. attr.group)
+	at:prop_add("Group", "Skills/" .. skill.group)
     end
+
+    -- Defense: Lower of dex/wits
+    local at = ch:attr_add("Defense")
+    local at2 = ch:attr_add("Defense Lowest");
+    at2:ref_add("Dexterity");
+    at2:ref_add("Wits");
+    at2:filter_set("Nebula.Minimum");
+    at:ref_add("Defense Lowest");
+    
+    -- size: 5
+    local at = ch:attr_add("Size");
+    at:value_add(5,"Human Base")
+
+    -- Health: stamina + size
+    local at = ch:attr_add("Health");
+    at:ref_add("Stamina");
+    at:ref_add("Size");
+
+    -- init: dex + composure
+    local at = ch:attr_add("Initiative");
+    at:ref_add("Dexterity");
+    at:ref_add("Composure");
+
+    -- Morality: 7
+    local at = ch:attr_add("Morality");
+    at:value_add(7,"Base");
+
+    -- speed: dex + str + 5
+    local at = ch:attr_add("Speed");
+    at:ref_add("Strength");
+    at:ref_add("Dexterity");
+    at:value_add(5,"Human Base");
+
+    -- willpower: resolve + composure
+    local at = ch:attr_add("Willpower");
+    at:ref_add("Resolve");
+    at:ref_add("Composure");
+
+    return true
+end
+
+print("Warning Debugging mode enabled")
+if not ch then
+    ch = nebula.character_add("NWOD Test")
+    debug = true
 end
 
 init(ch)
 
-
+if debug then
+    ch:save("nwodtest.nch")
+end
+return true
 -- vim: set sw=4 sts=4 syn=lua : 
-
-
