@@ -24,6 +24,7 @@ static int lneb_note_get(lua_State *);
 static int lneb_attr_value_get(lua_State *);
 static int lneb_elem_value_add(lua_State *);
 static int lneb_elem_ref_add(lua_State *);
+static int lneb_attr_filter_set(lua_State *);
 static int lneb_lock(lua_State *);
 static int lneb_unlock(lua_State *);
 static int lneb_attr_tostring(lua_State *);
@@ -76,6 +77,7 @@ static const struct luaL_Reg attrfns[] = {
 	{ "prop_add",	lneb_attr_prop_add },
 	{ "property_add",lneb_attr_prop_add },
 	{ "ref_add",	lneb_elem_ref_add },
+	{ "filter_set", lneb_attr_filter_set },
 	{ "lock",	lneb_lock },
 	{ "unlock",	lneb_unlock },
 	{ "__call",	lneb_attr_value_get },
@@ -645,6 +647,22 @@ lneb_elem_ref_add(lua_State *L){
 	if (transform)
 		neb_elem_ref_transform_set(lnr->elem, transform);
 
+	return 1;
+}
+
+
+static int
+lneb_attr_filter_set(lua_State *L){
+	struct lneb_attr *lna;
+	const char *filter;
+
+	lna = luaL_checkudata(L, 1, LNEB_ATTRIBUTE);
+	filter = luaL_checkstring(L, 2);
+
+	/* FIXME: Check error return */
+	neb_attr_filter_set(lna->attr, filter);
+
+	lua_pushboolean(L,1);
 	return 1;
 }
 
