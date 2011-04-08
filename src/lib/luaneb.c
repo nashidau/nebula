@@ -11,6 +11,7 @@
 
 static int luaneb_character_push(lua_State *, struct neb_character *nc, const char *);
 
+
 static int lneb_character_add(lua_State *);
 static int lneb_character_get(lua_State *);
 static int lneb_character_save(lua_State *);
@@ -30,6 +31,8 @@ static int lneb_unlock(lua_State *);
 static int lneb_attr_tostring(lua_State *);
 static int lneb_attr_index(lua_State *);
 
+static int lneb_elem_index(lua_State *);
+
 int luaneb_stackdump(lua_State* l);
 
 
@@ -41,6 +44,12 @@ struct lneb_char {
 struct lneb_attr {
 	struct nebula *neb;
 	struct neb_attr *attr;
+};
+
+
+struct lneb_elem {
+	struct nebula *neb;
+	struct neb_elem *elem;
 };
 
 struct lneb_ref {
@@ -86,6 +95,9 @@ static const struct luaL_Reg attrfns[] = {
 	{ NULL,		NULL },
 };
 
+static const struct luaL_Reg elemfns[] = {
+	{ "__index",	lneb_elem_index },
+};
 
 #define LNEB_CHARACTER	"neb_character"
 #define LNEB_ATTRIBUTE	"neb_attribute"
@@ -210,6 +222,65 @@ luaneb_character_push(lua_State *L, struct neb_character *nc, const char *name){
 
 	return 0;
 }
+
+/**
+ * Push an attribute onto the stack
+ *
+ * @param L Lua state
+ * @param attr Attribute to push
+ * @return 0 on success, -1 on error.
+ * FIXME: Use this internally
+ */
+int
+luaneb_attr_push(struct nebula *neb, struct neb_attr *attr){
+	struct lneb_attr *lna;
+	lua_State *L;
+
+	if (!neb || !neb->L || !attr) return -1;
+	L = neb->L;
+
+	lna = lua_newuserdata(L, sizeof(struct lneb_attr));
+	lna->attr = attr;
+	lna->neb = attr->ch->neb;
+
+	if (luaL_newmetatable(L,LNEB_ATTRIBUTE)){
+                luaL_register(L, NULL, attrfns);
+        }
+
+        lua_setmetatable(L,-2);
+
+	return 1;
+}
+/**
+ * Push an element onto the stack
+ *
+ * @param L Lua state
+ * @param elem Element to push
+ * @return 0 on success, -1 on error.
+ * FIXME: Use this internally
+ */
+int
+luaneb_elem_push(struct nebula *neb, struct neb_elem *elem){
+	struct lneb_elem *lne;
+	lua_State *L;
+
+	if (!neb || !neb->L || !elem) return -1;
+	L = neb->L;
+
+	lne = lua_newuserdata(L, sizeof(struct lneb_elem));
+	lne->elem = elem;
+	lne->neb = neb;
+
+	if (luaL_newmetatable(L,LNEB_ELEMENT)){
+                luaL_register(L, NULL, elemfns);
+        }
+
+        lua_setmetatable(L,-2);
+
+	return 1;
+}
+
+
 
 
 struct neb_character *
@@ -665,6 +736,39 @@ lneb_attr_filter_set(lua_State *L){
 	lua_pushboolean(L,1);
 	return 1;
 }
+
+
+
+
+/** Element functions.
+ * FIXME: Put in own file.
+ */
+static int
+lneb_elem_index(lua_State *L){
+	const char *field;
+        struct lneb_elem *lne;
+
+        field = luaL_checkstring(L,2);
+
+        lua_getmetatable(L,1);
+        lua_getfield(L,-1,field);
+
+        if (!lua_isnil(L,-1))
+                return 1;
+
+        lua_pop(L,2);
+
+        lne = luaL_checkudata(L, 1, LNEB_ELEMENT);
+
+        if (streq(field,"value")){
+                lua_pushnumber(L,neb_elem_value_get(lne->elem));
+        } else {
+                return luaL_error(L,"Unknown field %s",field);
+        }
+        return 1;
+}
+
+/* Misc functions */
 
 
 int
