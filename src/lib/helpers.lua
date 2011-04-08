@@ -100,4 +100,35 @@ function dnd35stattransform(value)
     return math.floor((value - 10) / 2)
 end
 
+
+
+-- Generic Nebula items
+Filters = {}
+Filters.Nebula = {}
+
+Filters.Nebula.Minimum = function(attr)
+    local smallest = 0;
+    local first = true
+
+    print("Min filter for ",attr.name)
+    return {
+	next = function(elem)
+	    if first then
+		smallest = elem.value;
+		first = false
+	    else
+		local val = elem.value;
+		if val < smallest then
+		    smallest = val;
+		end
+	    end
+	end,
+	done = function()
+	    if first then return 0 end
+	    return smallest
+	end
+    }
+end
+
+
 -- vim: set sw=4 sts=4 :
