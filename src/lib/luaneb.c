@@ -27,6 +27,7 @@ static int lneb_elem_ref_add(lua_State *);
 static int lneb_lock(lua_State *);
 static int lneb_unlock(lua_State *);
 static int lneb_attr_tostring(lua_State *);
+static int lneb_attr_index(lua_State *);
 
 int luaneb_stackdump(lua_State* l);
 
@@ -79,6 +80,7 @@ static const struct luaL_Reg attrfns[] = {
 	{ "unlock",	lneb_unlock },
 	{ "__call",	lneb_attr_value_get },
 	{ "__tostring",	lneb_attr_tostring },
+	{ "__index",	lneb_attr_index },
 	{ NULL,		NULL },
 };
 
@@ -258,9 +260,6 @@ luaopen_nebula(lua_State *lua){
 
 	/* FIXME: Function this up */
 	luaL_newmetatable(lua, LNEB_ATTRIBUTE);
-	lua_pushstring(lua, "__index");
-	lua_pushvalue(lua, -2);  /* pushes the metatable */
-	lua_settable(lua, -3);  /* metatable.__index = metatable */
 	luaL_openlib(lua, NULL, attrfns, 0);
 
 	luaL_newmetatable(lua, LNEB_ELEMENT);
@@ -356,6 +355,33 @@ lneb_character_name_get(lua_State *L){
 
 	lua_pushstring(L,neb_character_name_get(lnc->ch));
 	return 1;
+}
+
+static int
+lneb_attr_index(lua_State *L){
+	const char *field;
+        struct lneb_attr *lna;
+
+        field = luaL_checkstring(L,2);
+
+        lua_getmetatable(L,1);
+        lua_getfield(L,-1,field);
+
+        if (!lua_isnil(L,-1))
+                return 1;
+
+        lua_pop(L,2);
+
+        lna = luaL_checkudata(L, 1, LNEB_ATTRIBUTE);
+
+        if (streq(field,"name")){
+                lua_pushstring(L,neb_attr_name_get(lna->attr));
+        } else if (streq(field,"value")){
+                lua_pushnumber(L,neb_attr_value_get(lna->attr));
+        } else {
+                return luaL_error(L,"Unknown field %s",field);
+        }
+        return 1;
 }
 
 
