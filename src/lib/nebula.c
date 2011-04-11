@@ -26,7 +26,7 @@ nebula_init(void){
 
 	eina_init();
 
-	neb = malloc(sizeof(struct nebula));
+	neb = calloc(1,sizeof(struct nebula));
 	neb->characters = NULL;
 
 	luaneb_init(neb);
