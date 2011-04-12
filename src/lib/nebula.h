@@ -44,6 +44,7 @@ int neb_ch_note_del(struct neb_character *nc, struct neb_note *nt);
 int neb_note_text_append(struct neb_note *, const char *);
 const char *neb_note_title_get(struct neb_note *);
 const char *neb_note_body_get(struct neb_note *);
+int neb_character_note_del(struct neb_character *nc, const char *title);
 struct neb_note *neb_character_note_find(struct neb_character *ch,
 		const char *title);
 int neb_note_tag_add(struct neb_note *note, const char *tag);

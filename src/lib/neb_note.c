@@ -52,6 +52,8 @@ neb_character_note_add(struct neb_character *nc, const char *title,
 
 	if (!nc || !title) return NULL;
 
+	neb_character_note_del(nc, title);
+
 	note = calloc(1,sizeof(struct neb_note));
 	if (!note) return NULL;
 
@@ -279,4 +281,32 @@ const char *
 neb_note_body_get(struct neb_note *note){
 	if (!note) return NULL;
 	return note->note;
+}
+
+/**
+ * Delete a note from a character.
+ *
+ * Deletes a single note from a character.
+ *
+ * @param nc Nebula character.
+ * @param title Title of note to delete.
+ * @return 0 on success, -1 on error.
+ */
+int
+neb_character_note_del(struct neb_character *nc, const char *title){
+	struct neb_note *note;
+	char *tag;
+
+	note = neb_character_note_find(nc, title);
+
+	if (!note) return -1;
+
+	nc->notes = eina_list_remove(nc->notes, note);
+
+	free(note->name);
+	free(note->note);
+	EINA_LIST_FREE(note->tags,tag)
+		free(tag);
+	free(note);
+	return 0;
 }
