@@ -52,6 +52,13 @@ local skills = {
 local function init(ch)
     local at
 
+    if ch:note_get("Nebula.System") then
+	return true
+    end
+
+    ch:note_add("Nebula.System", "NWOD")
+
+
     for i,note in ipairs(notes) do
 	local n = ch:note_add(note,note)
     end
@@ -106,7 +113,9 @@ local function init(ch)
     return true
 end
 
+
 print("Warning Debugging mode enabled")
+local debug = false
 if not ch then
     ch = nebula.character_add("NWOD Test")
     debug = true
