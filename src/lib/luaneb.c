@@ -17,6 +17,7 @@ static int lneb_character_get(lua_State *);
 static int lneb_character_save(lua_State *);
 static int lneb_character_name_set(lua_State *);
 static int lneb_character_name_get(lua_State *);
+static int lneb_character_template_apply(lua_State *);
 static int lneb_attr_add(lua_State *);
 static int lneb_attr_get(lua_State *);
 static int lneb_attr_prop_add(lua_State *);
@@ -77,6 +78,7 @@ static const struct luaL_Reg charfns[] = {
 	{ "attr_get",		lneb_attr_get },
 	{ "note_add",		lneb_note_add },
 	{ "note_get",		lneb_note_get },
+	{ "template_apply",	lneb_character_template_apply },
 	{ NULL,		NULL },
 };
 
@@ -430,6 +432,45 @@ lneb_character_name_get(lua_State *L){
 	lua_pushstring(L,neb_character_name_get(lnc->ch));
 	return 1;
 }
+
+/**
+ * Apply a template
+ *
+ * Returns (to lua) either true, or nil and a message
+ *
+ */
+static int
+lneb_character_template_apply(lua_State *L){
+	const char *template;
+	char *path;
+	struct lneb_char *lnc;
+	int rv;
+
+	lnc = luaL_checkudata(L, 1, LNEB_CHARACTER);
+	template = luaL_checkstring(L, 2);
+
+	if (strstr(template, ".ntemplate")){
+		path = strdup(template);
+	} else {
+		path = malloc(strlen(template) + strlen(".ntemplate") + 1);
+		sprintf(path,"%s.ntemplate",template);
+	}
+	rv = neb_character_template_apply(lnc->ch, path);
+
+	if (rv){
+		/* FIXME: Better errors */
+		printf("Some error from template apply\n");
+		lua_pushnil(L);
+		lua_pushstring(L,"Template apply error");
+		free(path);
+		return 2;
+	}
+
+	free(path);
+	lua_pushboolean(L,1);
+	return 1;
+}
+
 
 static int
 lneb_attr_index(lua_State *L){
