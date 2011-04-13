@@ -216,7 +216,7 @@ neb_charcter_note_tagged_get(struct neb_character *ch, const char *tag){
 int
 neb_note_text_append(struct neb_note *note, const char *text){
 	char *nbuf;
-	int len,len2;
+	int nlen;
 	if (!note) return -1;
 	if (!text) return 0;
 
@@ -225,16 +225,16 @@ neb_note_text_append(struct neb_note *note, const char *text){
 		return !note->note;
 	}
 
-	len = strlen(note->note);
-	len2 = strlen(text);
+	nlen = strlen(text);
 
-	nbuf = realloc(note->note, len + len2 + 1);
+	nbuf = realloc(note->note, note->len + nlen + 1);
 	if (!nbuf)
 		return -1;
 
 	note->note = nbuf;
-	memcpy(note->note + len, text, len2);
-	note->note[len + len2] = '\0';
+	memcpy(note->note + note->len, text, nlen);
+	note->note[note->len + nlen] = '\0';
+	note->len += nlen;
 
 	return 0;
 }
@@ -281,6 +281,20 @@ const char *
 neb_note_body_get(struct neb_note *note){
 	if (!note) return NULL;
 	return note->note;
+}
+
+/**
+ * Get the length of a note.
+ *
+ * This may be useful for display purposes.
+ *
+ * @param note Note to get length of
+ * @return Length, or -1 on error.
+ */
+int
+neb_note_length_get(struct neb_note *note){
+	if (!note) return -1;
+	return note->len;
 }
 
 /**

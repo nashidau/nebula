@@ -25,6 +25,7 @@ struct neb_character {
 struct neb_note {
 	char *name;
 	char *note;
+	int len;
 
 	Eina_List *tags;
 };
