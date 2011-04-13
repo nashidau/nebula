@@ -222,6 +222,7 @@ neb_note_text_append(struct neb_note *note, const char *text){
 
 	if (!note->note){
 		note->note = strdup(text);
+		note->len = strlen(text);
 		return !note->note;
 	}
 
