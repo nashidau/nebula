@@ -106,13 +106,14 @@ end
 Filters = {}
 Filters.Nebula = {}
 
-Filters.Nebula.Minimum = function(attr)
+Filters.Nebula.Minimum = function(ch, attr)
     local smallest = 0;
     local first = true
 
     print("Min filter for ",attr.name)
     return {
 	next = function(elem)
+	    print("Next: Elem val", elem, elem.value)
 	    if first then
 		smallest = elem.value;
 		first = false
@@ -124,8 +125,33 @@ Filters.Nebula.Minimum = function(attr)
 	    end
 	end,
 	done = function()
+	    print("Done: ",smallest)
 	    if first then return 0 end
 	    return smallest
+	end
+    }
+end
+
+Filters.NWOD.Mage.Rote = function(_ch, attr)
+    local ch = _ch
+    local total = 0
+
+    return {
+	next = function(elem)
+	    local name = elem:ref_get();
+	    print("Element is a reference to: ",name)
+	    local attr = ch:attr_get(name);
+	    if attr:prop_get("Order") == "Rote Speciality" then
+		print("\tspecialty!")
+		total = total + 1
+	    end
+	    print("\tValue",elem:value_get())
+	    total = total + elem:value_get()
+	    return true
+	end,
+	done = function()
+	    print("Rote Done: ", total)
+	    return total
 	end
     }
 end
