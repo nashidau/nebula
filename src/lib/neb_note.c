@@ -141,7 +141,7 @@ neb_note_tag_add(struct neb_note *note, const char *tag){
 	/* FIXME: check for duplicates */
 	note->tags = eina_list_append(note->tags, strdup(tag));
 
-	return !!note->tags;
+	return !note->tags;
 }
 
 /**
@@ -192,7 +192,7 @@ neb_charcter_note_tagged_get(struct neb_character *ch, const char *tag){
 
 	nl = NULL;
 	EINA_LIST_FOREACH(ch->notes, ntmp, note){
-		EINA_LIST_FOREACH(ch->notes, tl, ntag){
+		EINA_LIST_FOREACH(note->tags, tl, ntag){
 			if (strcmp(ntag, tag) == 0){
 				nl = eina_list_append(nl, note);
 				break;
