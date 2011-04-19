@@ -3,6 +3,7 @@
 #include "../nebula.h"
 
 #define TEST_CH_NAME "Name"
+#define TEST_FILE "acharacter"
 
 START_TEST(character_add){
 	struct nebula *neb;
@@ -99,6 +100,91 @@ START_TEST(character_neb_get){
 }
 END_TEST
 
+START_TEST(char_add){
+	struct nebula *neb;
+	struct neb_character *ch;
+	struct neb_attr *at;
+	int result;
+
+	neb = nebula_init();
+	fail_if(neb == NULL, "Nebula was NULL");
+
+	ch = neb_character_new(neb);
+	fail_if(ch == NULL, "Unable to create character");
+
+	at = neb_character_attr_add(ch, TEST_CH_NAME);
+	fail_if(at == NULL, "Unable to add attribute");
+
+	result = nebula_character_add(neb, ch);
+	fail_if(result != 0, "Unable to add a character to be managed");
+}
+END_TEST
+
+START_TEST(character_load){
+	struct nebula *neb;
+	struct neb_character *ch;
+	struct neb_attr *at;
+	int result;
+
+	neb = nebula_init();
+	fail_if(neb == NULL, "Nebula was NULL");
+
+	ch = neb_character_new(neb);
+	fail_if(ch == NULL, "Unable to create character");
+
+	at = neb_character_attr_add(ch, TEST_CH_NAME);
+	fail_if(at == NULL, "Unable to add attribute");
+
+	result = nebula_character_save(ch, TEST_FILE);
+	fail_if(result != 0, "Unable to save character");
+
+	ch = neb_character_load(neb, TEST_FILE);
+	fail_if(ch == NULL, "Unable to load character");
+}
+END_TEST
+
+START_TEST(character_load_not_existed){
+	struct nebula *neb;
+	struct neb_character *ch;
+	struct neb_attr *at;
+	int result;
+
+	neb = nebula_init();
+	fail_if(neb == NULL, "Nebula was NULL");
+
+	ch = neb_character_new(neb);
+	fail_if(ch == NULL, "Unable to create character");
+
+	at = neb_character_attr_add(ch, TEST_CH_NAME);
+	fail_if(at == NULL, "Unable to add attribute");
+
+	result = nebula_character_save(ch, TEST_FILE);
+	fail_if(result != 0, "Unable to save character");
+
+	ch = neb_character_load(neb, "not existed");
+	fail_if(ch != NULL, "Load wrong character");
+}
+END_TEST
+
+START_TEST(character_save){
+	struct nebula *neb;
+	struct neb_character *ch;
+	struct neb_attr *at;
+	int result;
+
+	neb = nebula_init();
+	fail_if(neb == NULL, "Nebula was NULL");
+
+	ch = neb_character_new(neb);
+	fail_if(ch == NULL, "Unable to create character");
+
+	at = neb_character_attr_add(ch, TEST_CH_NAME);
+	fail_if(at == NULL, "Unable to add attribute");
+
+	result = nebula_character_save(ch, TEST_FILE);
+	fail_if(result != 0, "Unable to save character");
+}
+END_TEST
 
 
 Suite *
@@ -111,6 +197,9 @@ character_suite(void){
 	tcase_add_test(tc, character_find);
 	tcase_add_test(tc, character_find_in_large_neb);
 	tcase_add_test(tc, character_neb_get);
+	tcase_add_test(tc, char_add);
+	tcase_add_test(tc, character_load);
+	tcase_add_test(tc, character_save);
 
 
 	suite_add_tcase(s, tc);
