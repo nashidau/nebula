@@ -50,7 +50,7 @@ struct neb_note *neb_character_note_find(struct neb_character *ch,
 		const char *title);
 int neb_note_tag_add(struct neb_note *note, const char *tag);
 int neb_note_tag_remove(struct neb_note *note, const char *tag);
-Eina_List *neb_charcter_note_tagged_get(struct neb_character *ch, const char *);
+Eina_List *neb_character_note_tagged_get(struct neb_character *ch, const char *);
 
 struct neb_elem *neb_attr_elem_add(struct neb_attr *,
 		enum neb_elem_type);

@@ -16,6 +16,7 @@
 int
 luaneb_filter_init(struct neb_attr *attr){
 	lua_State *L;
+	struct neb_character *nv;
 	int top;
 	int fref;
 	int rv;
